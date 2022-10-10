@@ -1,0 +1,10 @@
+<h1>Add a user</h1>
+
+<form action="add-user-post/" method="post">
+{% csrf_token %}
+    Name:
+    <br>
+    <input name="name">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
