@@ -1,10 +1,7 @@
 from django.shortcuts import render
-from .models import User
+from .models import RegisteredUser
 
 # Create your views here.
 def index(request):
-    users = list(User.objects.all().values())
-
-    args = {"users": users}
-
-    return render(request, 'index.html', args)
+    args = {}
+    return render(request, 'main_app/index.html', args)

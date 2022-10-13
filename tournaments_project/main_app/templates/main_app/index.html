@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 id="index_title">Hello IIS team!!</h1>
+<p id="welcome">Welcome all the users:</p> 
+
+{% for x in users %}
+<li style='background-color:{% cycle '#FF0024' '#00A8E3' %}'>
+    {{ x.name }}
+</li>
+{% endfor %}
+
+{% endblock content %}
