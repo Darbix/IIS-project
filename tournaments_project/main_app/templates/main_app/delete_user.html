@@ -1,0 +1,10 @@
+<h1>Delete a user</h1>
+
+<form action="delete-user-post/" method="post">
+{% csrf_token %}
+    Name:
+    <br>
+    <input name="name">
+    <br><br>
+    <input type="submit" value="Submit">
+</form>

@@ -2,13 +2,72 @@
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <link rel="stylesheet" href="{% static 'main_app/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/base_style.css' %}" />
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    {% block head-extension %}
+    {% endblock %}
 </head>
 
 <body>
-    {% block content %}{% endblock content %}
+    <div id="navig-panel">
+        <div id="logo-title">
+            <a class="menu-href" href="/"><span>Tournament</span> Manager</a>
+        </div>
+        <div id="navig-bar">
+            <ul>
+                <li><a class="menu-href" href="/">Home</a></li>
+                <li><a class="menu-href" href="/#2">Games</a></li>
+                <li><a class="menu-href" href="/#3">Matches</a></li>
+                <li><a class="menu-href" href="/#4">About</a></li>
+            </ul>
+        </div>
+        {% if user != None %}
+            <div id="btn-profile">
+                <a href="/user-profile/" class="menu-href">Profile</a>
+            </div>
+        {% endif %}
+        <div id="btn-login-out" class="{% if user == None %}login{% else %}logout{% endif %}">
+            <a class="menu-href" href="{% if user == None %}/login-user/{% else %}/logout-user/{% endif %}">
+                {% if user == None %}
+                    Login
+                {% else %}
+                    Log out
+                {% endif %}
+            </a>
+        </div>
+    </div>
+
+    {% block body-block %}
+            <div id="container">
+                <div id="left-panel">
+                    <div class="banner" id="left-banner"></div>
+                </div>
+
+                <section id="article-section">
+                    {% block main-title-block %}
+                        <div class="main-title-div">
+                            <h1 class="main-title">
+                                {% block main-title-content-block %}
+                                    ...
+                                {% endblock %}
+                            </h1>
+                        </div>
+                    {% endblock %}
+
+                    {% block article-block %}
+                    {% endblock %}
+                </section>
+
+                <div id="right-panel">
+                    <div class="banner" id="right-banner"></div>
+                </div>
+            <div>
+    {% endblock %}
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,8 +5,8 @@ class RegisteredUser(models.Model):
     lastname = models.CharField(max_length=64)
     email = models.CharField(max_length=64, unique=True)
     password = models.CharField(max_length=60)
-    avatar = models.ImageField(upload_to='avatars')
-    description = models.TextField()
+    avatar = models.ImageField(upload_to='media', default='media/default.png')
+    description = models.TextField(blank=True)
 
 # Pouze administrátor může vytvářet typy turnajů, které je možné hrát.
 # Z těchto typů si následně správce turnajů můžou vybírat
@@ -15,7 +15,7 @@ class TournamentType(models.Model):
 
 class Tournament(models.Model):
     name = models.CharField(max_length=64)
-    description = models.TextField()
+    description = models.TextField(default='')
     date = models.DateField()
     prize = models.CharField(max_length=64)
 
@@ -41,7 +41,7 @@ class Team(models.Model):
     owner = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
 
 # Ukládání týmů. Uživatel může být ve více týmech zároveň a týmy mají několik uživatelů
-class UserTeam(models.model):
+class UserTeam(models.Model):
     user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     #class Meta:

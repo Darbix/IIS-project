@@ -1,13 +1,39 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends 'base.html' %}
 
-<h1 id="index_title">Hello IIS team!!</h1>
-<p id="welcome">Welcome all the users:</p> 
+{% load static %}
+    
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'css/index_style.css' %}" />
+{% endblock %}
 
-{% for x in users %}
-<li style='background-color:{% cycle '#FF0024' '#00A8E3' %}'>
-    {{ x.name }}
-</li>
-{% endfor %}
+{% block main-title-content-block %}
+    Welcome to Knockout Tournament Manager!
+{% endblock %}
 
-{% endblock content %}
+{% block article-block %}
+    <div id="main-content">
+        
+        <button class="btn" onclick="location.href='add-user/'" type="button">Add user</button>
+        <button class="btn" onclick="location.href='delete-user/'" type="button">Delete user</button>
+        <br><br>
+        
+        <h2 id="welcome">TODO Welcome all the users:</h2> 
+        <div id="user-list">
+            {% for x in users %}
+            <li style="background-color:{% cycle '#292929' '#393939' %}">
+                {{ x.name }}
+            </li>
+            {% endfor %}
+        </div>
+
+        <h2>Recent News</h2>
+
+        {% if user != None %}
+            <div class="col">
+                <a href="/" class="idk" style='color:yellow;'>Enter</a>
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
+
