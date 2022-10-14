@@ -1,8 +1,8 @@
 from django.db import models
 
 class RegisteredUser(models.Model):
-    firstname = models.CharField(max_length=64)
-    lastname = models.CharField(max_length=64)
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=64)
     email = models.CharField(max_length=64, unique=True)
     password = models.CharField(max_length=60)
     avatar = models.ImageField(upload_to='media', default='media/default.png')
@@ -27,14 +27,13 @@ class Tournament(models.Model):
             (3, 'Finished')
         )
     )
-    minimumTeamSize = models.PositiveIntegerField()
-    maximumTeamSize = models.PositiveIntegerField()
+    minimum_team_size = models.PositiveIntegerField()
+    maximum_team_size = models.PositiveIntegerField()
 
 # Ukládání správců turnaje. Uživatel může spravovat více turnajů a turnaj může mít více správců
 class UserTournamentModerator(models.Model):
     user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
-
 
 class Team(models.Model):
     name = models.CharField(max_length=64)
@@ -44,11 +43,35 @@ class Team(models.Model):
 class UserTeam(models.Model):
     user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    #class Meta:
-    #    unique_together = (user, team)
+    class Meta:
+        unique_together = ('user', 'team')
 
 # Požadavek zaslaný správcem týmu uživateli o přidání do týmu
 # - ať správce týmu nemůže přidávat jakékoliv uživatele
 class UserTeamRequest(models.Model):
     user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = ('user', 'team')
+
+class TournamentMatch(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
+    state = models.PositiveSmallIntegerField(
+        choices=(
+            (1, 'Not started'),
+            (2, 'Ongoing'),
+            (3, 'Finished')
+        )
+    )
+    team_1_score = models.PositiveIntegerField()
+    team_2_score = models.PositiveIntegerField()
+
+class TournamentRound(models.Model):
+    match = models.ForeignKey(TournamentMatch, on_delete=models.CASCADE)
+    team_1 = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL, related_name='%(class)s_team_1')
+    team_2 = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL, related_name='%(class)s_team_2')
+
+class KnockoutMatch(models.Model):
+    match = models.ForeignKey(TournamentMatch, on_delete=models.CASCADE)
+    team_1_match_winner = models.ForeignKey(TournamentMatch, on_delete=models.CASCADE, related_name='%(class)s_team_1_match_winner')
+    team_2_match_winner = models.ForeignKey(TournamentMatch, on_delete=models.CASCADE, related_name='%(class)s_team_2_match_winner')

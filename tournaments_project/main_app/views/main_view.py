@@ -18,7 +18,7 @@ def add_user(request):
 
 def add_user_post(request):
     n = request.POST["name"]
-    user = RegisteredUser(firstname=n)
+    user = RegisteredUser(first_name=n)
     user.save()
     return HttpResponseRedirect(reverse('index'))
 
