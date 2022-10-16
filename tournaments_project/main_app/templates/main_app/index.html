@@ -1,39 +1,41 @@
 {% extends 'base.html' %}
 
 {% load static %}
-    
+
 {% block head-extension %}
-    <link rel="stylesheet" href="{% static 'css/index_style.css' %}" />
+    <link rel="stylesheet" href="{% static 'main_app/index.css' %}" />
 {% endblock %}
 
-{% block main-title-content-block %}
-    Welcome to Knockout Tournament Manager!
-{% endblock %}
-
-{% block article-block %}
-    <div id="main-content">
-        
-        <button class="btn" onclick="location.href='add-user/'" type="button">Add user</button>
-        <button class="btn" onclick="location.href='delete-user/'" type="button">Delete user</button>
-        <br><br>
-        
-        <h2 id="welcome">TODO Welcome all the users:</h2> 
-        <div id="user-list">
-            {% for x in users %}
-            <li style="background-color:{% cycle '#292929' '#393939' %}">
-                {{ x.name }}
-            </li>
-            {% endfor %}
-        </div>
-
-        <h2>Recent News</h2>
-
-        {% if user != None %}
-            <div class="col">
-                <a href="/" class="idk" style='color:yellow;'>Enter</a>
+{% block main-content %}
+    <div class="row">
+        <div class="col-12">
+            <h1>Welcome to Tournament Manager</h1>
+            <br>
+            <h2>Recent News</h2>
+            <div class="div-box">
+                <div class="div-box-header">
+                    <span class="fa fa-circle"></span>
+                    User TODO won the Mario Kart Tournament!
+                </div>
+                <div class="div-box-content">
+                    <p>
+                        Added those expandable boxes, that can be used in all pages.<br>
+                        div-box{div-box-header, div-box-content}
+                    </p>
+                </div>
             </div>
-        {% endif %}
-
+            <div class="div-box">
+                <div class="div-box-header">
+                    <span class="fa fa-circle"></span>
+                    New ... added
+                </div>
+                <div class="div-box-content">
+                    <p>
+                        Use &#123;&#37; block main-content &#37;&#125; for articles with side padding like this one.<br>
+                        Or &#123;&#37; block page-content &#37;&#125; for the whole body content
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
-

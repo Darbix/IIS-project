@@ -3,26 +3,36 @@
 {% load static %}
     
 {% block head-extension %}
-    <link rel="stylesheet" href="{% static 'css/login_user_style.css' %}" />
+    <link rel="stylesheet" href="{% static 'main_app/login_user.css' %}" />
 {% endblock %}
 
-{% block article-block %}
+{% block main-content %}
 
-<h1>Login user</h1>
+    <h1>Login user</h1>
+    <br>
 
-<form action="" method="post">
-{% csrf_token %}
-    Email:
-    <br>
-    <input name="email">
-    <br>
-    Password:
-    <br>
-    <input type="password" name="password">
-    <br>
-    <br><br>
-    <input type="submit" value="Submit">
-</form>
+    <div class="row" id="login-box">
+        <div class="col-2">
+        </div>
+
+        <form action="" method="post" class="col-8">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-xl-4">Email:</div>
+                <div class="col-xl-8 val-col"><input name="email"></div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-xl-4">Password:</div>
+                <div class="col-xl-8 val-col"><input type="password" name="password"></div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-xl-6 btn-col"><input type="submit" value="Submit"></div>
+                <div class="col-xl-6 btn-col"><input type="submit" value="Register"></div>
+            </div>
+        </form>
+
+        <div class="col-2">
+        </div>
+    </div>
 
 {% endblock %}
-
