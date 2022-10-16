@@ -1,10 +1,23 @@
 <h1>Add a user</h1>
 
-<form action="add-user-post/" method="post">
+<form action="" method="post">
 {% csrf_token %}
-    Name:
+    First name:
     <br>
-    <input name="name">
+    <input name="first_name">
+    <br>
+    Last name:
+    <br>
+    <input name="last_name">
+    <br>
+    Email:
+    <br>
+    <input name="email">
+    <br>
+    Password:
+    <br>
+    <input type="password" name="password">
+    <br>
     <br><br>
     <input type="submit" value="Submit">
 </form>

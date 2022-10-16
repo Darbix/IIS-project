@@ -6,9 +6,23 @@
     <link rel="stylesheet" href="{% static 'css/login_user_style.css' %}" />
 {% endblock %}
 
-{% block body-content %}
+{% block article-block %}
 
-    
+<h1>Login user</h1>
+
+<form action="" method="post">
+{% csrf_token %}
+    Email:
+    <br>
+    <input name="email">
+    <br>
+    Password:
+    <br>
+    <input type="password" name="password">
+    <br>
+    <br><br>
+    <input type="submit" value="Submit">
+</form>
 
 {% endblock %}
 

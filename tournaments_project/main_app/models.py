@@ -4,7 +4,7 @@ class RegisteredUser(models.Model):
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     email = models.CharField(max_length=64, unique=True)
-    password = models.CharField(max_length=60)
+    password = models.CharField(max_length=88)
     avatar = models.ImageField(upload_to='media', default='media/default.png')
     description = models.TextField(blank=True)
 
