@@ -306,6 +306,7 @@ h1{
     background: var(--color2);
     font-size: 45px !important;
     padding: 5px 0;
+    border-radius: 5px;
 }
 
 h2{
