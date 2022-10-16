@@ -1,0 +1,360 @@
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa");
+@import url("https://fonts.googleapis.com/css2?family=Bungee");
+@import url("https://fonts.googleapis.com/css2?family=Lalezar");
+@import url("https://fonts.googleapis.com/css2?family=Nunito");
+
+:root{
+    --font1: 'Bungee';
+    --font2: "Nunito";
+    --color-bg: #262626;
+    --color-bg-dark: #0b0c10;
+    --color1: #61d6c7;
+    --color2: #f00059;
+    --color-light: #ebebeb;
+    --color-box: #3b3b3b;
+    --color-box-header: #494949;
+
+    --navbar-height: 120px;
+}
+
+/* ----- Navigation panel ----- */
+.navbar {
+    height: var(--navbar-height);
+    background-color: var(--color-bg) !important;
+    padding: 0 !important;
+    box-shadow: 0 3px 0px var(--color-bg);
+}
+
+/* Logo */
+#navbar-brand-div{
+    background: linear-gradient(7deg, 
+        var(--color-bg) 10%, 
+        var(--color2)   11%, var(--color2)   15%, 
+        var(--color-bg) 16%, var(--color-bg) 21%, 
+        var(--color2)   22%, var(--color2)   78%, 
+        var(--color-bg) 79%, var(--color-bg) 84%, 
+        var(--color2)   85%, var(--color2)   89%,
+        var(--color-bg) 90%);
+    height: 120px;
+    padding: 35px 30px;
+    min-width: 280px;
+}
+
+/* logo content */
+#navbar-brand-div > .navbar-brand > div{
+    line-height: 25px;
+    width: fit-content;
+    margin: 0 auto 0 0;
+    color: var(--color-bg);
+    font-size: 24px !important;
+    font-family: var(--font1);
+}
+
+#navbar-brand-div > .navbar-brand > #div-brand-manager{
+    margin: 0 0 0 auto !important;
+}
+
+/* Panel gap on the right of the logo length */
+#navbar-right-gap{
+    width: 280px;
+}
+
+/* Top right buttons */
+#nav-right{
+    position: absolute; 
+    right: 0; 
+    top: 0;
+}
+
+#nav-right > .btn{
+    font-size: 39px;
+    line-height: var(--navbar-height);
+    padding: 0;
+    width: 100px;
+    border: none;
+    color: var(--color-light) !important;
+}
+
+#nav-right > .btn:focus, .btn:active{
+    outline: none;
+    box-shadow: none;
+}
+
+#nav-right > .btn:hover{
+    color: white !important;
+    text-shadow: 0 0 5px var(--color-light);
+    transition: all 0.3s ease;
+}
+
+/* Navigation center bar */
+#navigation > .navbar-nav{
+    white-space: nowrap;
+    line-height: var(--navbar-height);
+}
+
+/* Center navigation links */
+#navigation > .navbar-nav > .nav-link{
+    font-size: 25px;
+    font-family: var(--font1);
+    color: var(--color1);
+    padding: 0 15px;
+    text-align: center;
+
+    /* 50.1 because of a weird space on phones */
+    background: linear-gradient(to bottom, transparent 50.1%, var(--color1) 50%) top;
+    background-size: 100% 200%;
+    position: relative;
+}
+
+/* Bottom link lines */
+#navigation > div.navbar-nav.mx-auto > .nav-link:after{
+    content : "";
+    position: absolute;
+    left    : 6%;
+    bottom  : 0;
+    height  : 100%;
+    width   : 88%;
+    border-bottom: 10px solid var(--color1);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+}
+
+#navigation > .navbar-nav > .nav-link:hover{
+    transition: all 0.3s ease;
+    background-position: bottom;
+    color: var(--color-bg) !important;
+}
+
+/* Different active navigation link design */
+#navigation > .navbar-nav > .nav-link.active{
+    color: var(--color-light);
+    text-shadow: 0 0 25px white;
+}
+#navigation > .navbar-nav > .nav-link.active:after{
+    border-bottom: 10px solid var(--color-light) !important;
+}
+
+/* Navigation icons */
+#navigation > .navbar-nav > .nav-link > .fa{
+    font-size: 22px !important;
+    padding-right: 5px;
+}
+
+/* Hide bottom link lines in navigation links */
+#navigation > .navbar-nav > .nav-link:hover:after,
+#navigation > .navbar-nav > .nav-link.active:hover:after{
+    border-bottom: 10px solid var(--color-bg) !important;
+    border-top: 10px solid var(--color-bg) !important;
+}
+
+/* Container for collapsible #navigation */
+#panel{
+    padding: 0;
+    /* height: var(--navbar-height); */
+}
+
+/* Navigation menu when it's collapsing */
+#navigation.collapsing,
+#navigation.show{
+    border-bottom: 4px solid transparent;
+    border-left: 16px solid var(--color1);
+    border-right: 16px solid var(--color1);
+    border-top: 4px solid transparent;
+}
+
+/* Collapsed link backgrounds */
+#navigation.collapsing > .navbar-nav, 
+#navigation.show > .navbar-nav{
+    background: var(--color-bg);
+}
+
+/* Hide collapsed link bottom lines */
+#navigation.collapsing > .navbar-nav > .nav-link:after, 
+#navigation.show > .navbar-nav > .nav-link:after{
+    border-bottom: 10px solid var(--color-bg) !important;
+}
+
+/* Collapsed link settings*/
+#navigation.collapsing .nav-link, 
+#navigation.show .nav-link{
+    font-size: 37px !important;
+}
+
+#navigation.collapsing .nav-link > .fa, 
+#navigation.show .nav-link > .fa{
+    font-size: 34px !important;
+}
+
+
+
+
+
+/* ----- Body content container ----- */
+#main-container > .container-fluid{
+    padding: 0;
+}
+
+/* Hide the sidebar when main-container is in the class 'toggled' */
+#main-container.toggled #sidebar-menu {
+    width: 0;
+    box-shadow: none;
+}
+
+/* Right sidebar menu */
+#sidebar-menu {
+    position: absolute;
+    right: 0;
+    top: var(--navbar-height);
+    z-index: 1000;
+    overflow-y: auto;
+    width: 600px;
+    height: 100%;
+    transition: all 0.5s ease;
+    font-family: var(--font1);
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+/* Sidebar navigation */
+.sidebar-nav {
+    width: 600px;
+    list-style: none;
+    padding: 25px 0 0 0;
+    height: fit-content;
+    background: var(--color-bg-dark);
+    margin: 0;
+    position: relative;
+    top: -2px;
+}
+
+/* Sidebar links */
+.sidebar-nav li {
+    line-height: 60px;
+    font-size: 26px;
+    padding: 9px 35px;
+
+    background: linear-gradient(to right, var(--color-bg-dark) 50%, var(--color2) 50%) left;
+    background-size: 200% 100%;
+}
+
+.sidebar-nav li:hover{
+    transition: all 0.3s ease;
+    background-position: right !important;
+}
+
+.sidebar-nav li a {
+    display: block;
+    color: var(--color-light);
+    text-decoration: none;
+}
+
+.sidebar-nav li .fa{
+    padding-right: 25px;
+}
+
+/* Username in the sidebar */
+#sidebar-menu > #sidebar-user {
+    line-height: 100px;
+    font-size: 28px;
+    line-height: 60px;
+    color: var(--color-bg-dark);
+    padding-left: 10px;
+    background: var(--color-light);
+    border: 25px solid white;
+    position: relative;
+    top: -1px;
+}
+
+/* Log in(out) sidebar link */
+.sidebar-nav > li.log-in-out{
+    background: linear-gradient(to right, var(--color-light) 50%, var(--color2) 50%) left;
+    background-size: 200% 100%;
+
+}
+.sidebar-nav > li.log-in-out > a{
+    color: var(--color-bg-dark) !important;
+}
+
+/* Rest of the sidebar to create a triangular effect */
+#sidebar-menu-rest{
+    height: 100%;
+    background: linear-gradient(45deg, 
+        transparent 45%, 
+        var(--color-light) 45.1%, var(--color-light) 47%,
+        transparent 47%.1%, transparent 50%,
+        var(--color-light) 50.1%, var(--color-light) 53%,
+        transparent 53%.1%, transparent 55%,
+        var(--color-bg-dark) 55.1%, var(--color-bg-dark) 100%);
+
+    min-height: 800px;
+    position: relative;
+    top: -3px;
+}
+
+h1{
+    text-align: center;
+    color: var(--color-bg);
+    background: var(--color2);
+    font-size: 45px !important;
+    padding: 5px 0;
+}
+
+h2{
+    color: white;
+    font-size: 36px !important;
+}
+
+
+
+
+
+
+/* ----- Page whole body content ----- */
+#page-content{
+    padding: 0;
+    font-family: var(--font2);
+    font-size: 22px;
+    font-weight: normal;
+    background: var(--color-bg);
+}
+
+/* Stylized Body content in the page-content */
+#main-content{
+    min-height: 100%;
+    color: white;
+    padding: 80px 0;
+}
+
+
+
+
+
+/* ----- Information box ----- */
+.div-box{
+    background: var(--color-box);
+    min-height: 200px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Information box header */
+.div-box-header{
+    background: var(--color-box-header);
+    line-height: 50px;
+    border-radius: 5px;
+    padding: 0 15px;
+    font-size: 25px;
+    font-weight: bold;
+    box-shadow: 0 10px 8px -8px rgba(0,0,0,0.2);
+}
+
+.div-box-header .fa{
+    padding-right: 5px;
+    color: var(--color2);
+}
+
+/* Information box content */
+.div-box-content{
+    padding: 20px 55px;
+
+}

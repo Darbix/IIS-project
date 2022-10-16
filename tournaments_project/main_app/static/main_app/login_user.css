@@ -1,0 +1,15 @@
+#login-box{
+    min-width: 300px;
+}
+
+#login-box .val-col > input{
+    width: 100%;
+}
+
+#login-box .btn-col{
+    text-align: center;
+}
+
+#login-box .btn-col > input{
+    min-width: 160px;
+}
