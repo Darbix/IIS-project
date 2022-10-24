@@ -4,35 +4,53 @@
     
 {% block head-extension %}
     <link rel="stylesheet" href="{% static 'main_app/login_user.css' %}" />
+
+    {% block login-head-extension %}
+    {% endblock %}
+    
 {% endblock %}
 
 {% block main-content %}
-
-    <h1>Login user</h1>
-    <br>
-
-    <div class="row" id="login-box">
-        <div class="col-2">
+    
+    <div id="form-box">
+        {% block form-box-block %}
+        
+        {% comment %} User icon {% endcomment %}
+        <div class="fa fa-user mb-4" id="user-icon">
         </div>
-
-        <form action="" method="post" class="col-8">
+        
+        <form action="/login-user/" method="post">
             {% csrf_token %}
-            <div class="row">
-                <div class="col-xl-4">Email:</div>
-                <div class="col-xl-8 val-col"><input name="email"></div>
+            <div class="form-outline mb-5">
+                <input type="email" class="form-control" name="email" placeholder="Email"/>
             </div>
-            <div class="row mt-3">
-                <div class="col-xl-4">Password:</div>
-                <div class="col-xl-8 val-col"><input type="password" name="password"></div>
+            
+            <div class="form-outline mb-5">
+                <input type="password" class="form-control" name="password" placeholder="Password"/>
             </div>
-            <div class="row mt-4">
-                <div class="col-xl-6 btn-col"><input type="submit" value="Submit"></div>
-                <div class="col-xl-6 btn-col"><input type="submit" value="Register"></div>
+            
+            <div class="row mb-4">
+                <div class="col-6 d-flex justify-content-center">
+                    <div class="form-check">
+                        <input class="form-check-input remember-me" type="checkbox"/>
+                        <span>Remember me</span>
+                    </div>
+                </div>
+            
+                <div class="col-6">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary mb-4" id="btn-login">Log in</button>
+            
+            <div class="text-center">
+                <p>Not a member? <a href="../register-user">Register</a></p>
             </div>
         </form>
 
-        <div class="col-2">
-        </div>
+        {% endblock %}
+
     </div>
 
 {% endblock %}

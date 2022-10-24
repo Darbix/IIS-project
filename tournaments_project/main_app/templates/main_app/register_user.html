@@ -1,0 +1,56 @@
+{% extends 'main_app/login_user.html' %}
+
+{% load static %}
+
+{% block login-head-extension %}
+    <script src="{% static 'main_app/register_user.js' %}"></script>
+{% endblock %}
+
+{% block form-box-block %}
+
+<div class="mb-4 h4">
+    Register a new user
+</div>
+
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="form-outline mb-5">
+        <input type="text" class="form-control" name="first_name" placeholder="First name"/>
+    </div>
+
+    <div class="form-outline mb-5">
+        <input type="text" class="form-control" name="last_name" placeholder="Last name"/>
+    </div>
+
+    <div class="form-outline mb-5">
+        <input type="email" class="form-control" name="email" placeholder="Email"/>
+    </div>
+    
+    <div class="form-outline mb-5">
+        <input type="password" class="form-control" id="password-input" name="password" placeholder="Password"/>
+    </div>
+
+    <div class="form-outline mb-5">
+        <input type="password" class="form-control" id="password-input-confirm" placeholder="Password" 
+            onkeyup="compare_passwords('password-input', 'password-input-confirm');"/>
+    </div>
+
+    <div class="form-outline mb-5">
+        <input type="text" class="form-control" placeholder="Date of birth" name="birthdate" onfocus="(this.type='date')"/>
+    </div>
+
+    <div class="form-outline mb-5">
+        <input type="tel" class="form-control" name="phone" placeholder="Phone number" pattern="[0-9]{9}"/>
+    </div>
+    
+    <button type="submit" class="btn btn-primary mb-4" id="btn-register" 
+        onclick="return validate('password-input', 'password-input-confirm');">
+        Register
+    </button>
+
+    <div class="text-center">
+        <p>Already a member? <a href="../login-user">Log in</a></p>
+    </div>
+</form>
+
+{% endblock %}

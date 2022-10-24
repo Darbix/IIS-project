@@ -8,17 +8,17 @@
     --font2: "Nunito";
     --color-bg: #262626;
     --color-bg-dark: #0b0c10;
-    --color1: #61d6c7;
-    --color2: #f00059;
+    --color1: #25e9e0;/*#61d6c7;*/
+    --color2: #ff366f;/*#f00059;*/
     --color-light: #ebebeb;
-    --color-box: #3b3b3b;
-    --color-box-header: #494949;
+    --color-box: #3d3d3d;
+    --color-box-header: #4c4c4c;
 
     --navbar-height: 120px;
 }
 
-body{
-    height: 100vh;
+html{
+    background: var(--color-bg);
 }
 
 /* ----- Navigation panel ----- */
@@ -66,6 +66,7 @@ body{
 /* Top right buttons */
 #nav-right{
     position: absolute; 
+    z-index: 10;
     right: 0; 
     top: 0;
 }
@@ -88,6 +89,11 @@ body{
     color: white !important;
     text-shadow: 0 0 5px var(--color-light);
     transition: all 0.3s ease;
+}
+
+#navigation{
+    /* Flow above font awesome icons */
+    z-index: 10;
 }
 
 /* Navigation center bar */
@@ -240,7 +246,6 @@ body{
 .sidebar-nav li {
     line-height: 60px;
     font-size: 26px;
-    padding: 9px 35px;
 
     background: linear-gradient(to right, var(--color-bg-dark) 50%, var(--color2) 50%) left;
     background-size: 200% 100%;
@@ -255,6 +260,7 @@ body{
     display: block;
     color: var(--color-light);
     text-decoration: none;
+    padding: 9px 35px;
 }
 
 .sidebar-nav li .fa{
@@ -287,15 +293,15 @@ body{
 /* Rest of the sidebar to create a triangular effect */
 #sidebar-menu-rest{
     height: 100%;
-    background: linear-gradient(45deg, 
+    background: linear-gradient(40deg, 
         transparent 45%, 
-        var(--color-light) 45.1%, var(--color-light) 47%,
+        #888888 45.1%, #888888 47%,
         transparent 47%.1%, transparent 50%,
         var(--color-light) 50.1%, var(--color-light) 53%,
         transparent 53%.1%, transparent 55%,
         var(--color-bg-dark) 55.1%, var(--color-bg-dark) 100%);
 
-    min-height: 800px;
+    min-height: 700px;
     position: relative;
     top: -3px;
 }
@@ -322,7 +328,7 @@ h2{
 #page-content{
     padding: 0;
     font-family: var(--font2);
-    font-size: 22px;
+    font-size: 1.32rem;
     font-weight: normal;
     background: var(--color-bg);
     height: 100%;
@@ -367,4 +373,10 @@ h2{
 .div-box-content{
     padding: 20px 55px;
 
+}
+
+/* Supress input internal-autofill-selected color */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
 }

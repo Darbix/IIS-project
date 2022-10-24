@@ -21,3 +21,10 @@ def delete_user_post(request):
     user = RegisteredUser.objects.filter(name=n)
     user.delete()
     return HttpResponseRedirect(reverse('index'))
+
+
+# TODO Temp renders
+def register_todo(request):
+   return HttpResponse(loader.get_template('main_app/register_user.html').render(None, request))
+def profile_todo(request):
+   return HttpResponse(loader.get_template('main_app/user_profile.html').render(None, request))
