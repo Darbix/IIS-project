@@ -1,15 +1,12 @@
 from django.urls import path
 # from . import views
-from .views import login_view, main_view, registration_view
+from .views import login_view, main_view, registration_view, profile_view, logout_view
 
 urlpatterns = [
     path('', main_view.index, name='index'),
-    path('add-user/', registration_view.AddUser.as_view(), name='add_user'),
-    path('delete-user/', main_view.delete_user, name='delete_user'),
+    path('register-user/', registration_view.AddUser.as_view(), name='register_user'),
     path('login-user/', login_view.LoginUser.as_view(), name='login_user'),
-
-    #TODO temp url paths
-    path('register-user/', main_view.register_todo, name='register_user'),
-    path('user-profile/', main_view.profile_todo, name='user_profile'),
-
+    path('logout-user/', logout_view.LogoutUser.as_view(), name='logout_user'),
+    path('user-profile/', profile_view.Profile.as_view(), name='user_profile'),
+    path('upload-profile-img/', profile_view.ProfileImageUpload.as_view(), name='upload_user_image'),
 ]

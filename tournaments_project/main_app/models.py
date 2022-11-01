@@ -1,12 +1,17 @@
 from django.db import models
+from datetime import date
 
 class RegisteredUser(models.Model):
+    # Vyžadované
     first_name = models.CharField(max_length=64)
     last_name = models.CharField(max_length=64)
     email = models.CharField(max_length=64, unique=True)
     password = models.CharField(max_length=88)
-    avatar = models.ImageField(upload_to='media', default='media/default.png')
+    # Nastavitelné po registraci
+    birth_date = models.DateField(default=date.min)
+    avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png')
     description = models.TextField(blank=True)
+    join_date = models.DateField(default=date.today)
 
 # Pouze administrátor může vytvářet typy turnajů, které je možné hrát.
 # Z těchto typů si následně správce turnajů můžou vybírat

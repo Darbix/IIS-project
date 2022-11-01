@@ -62,18 +62,18 @@
             {% comment %} Right sidebar menu {% endcomment %}
             <div id="sidebar-menu">
                 <div id="sidebar-user">
-                    {{ user }}_TODO
+                    {% if request.session.user == None %}Welcome{% else %}{{ request.session.user.first_name }} {{ request.session.user.last_name }}{% endif %}
                 </div>
                 <ul class="sidebar-nav">
-                    {% if user != None %}
+                    {% if request.session.user != None %}
                         <li><a href="/user-profile/"><span class="fa fa-address-card"></span>Profile</a></li>
                         <li><a href="#"><span class="fa fa-gear"></span>Settings</a></li>
                     {% endif %}
                     <li class="log-in-out">
                         {% comment %} TODO check that a user is logged in {% endcomment %}
-                        <a href="{% if user == None %}/login-user/{% else %}/logout-user/{% endif %}">
+                        <a href="{% if request.session.user == None %}/login-user/{% else %}/logout-user/{% endif %}">
                             <span class="fa fa-right-to-bracket"></span>
-                            {% if user == None %}
+                            {% if request.session.user == None %}
                                 Log in
                             {% else %}
                                 Log out

@@ -14,16 +14,17 @@
 
     {% comment %} Profile avatar {% endcomment %}
     <div id="left-panel" class="col-3">
-        <form action="/upload-profile-img">
+        <form action="/upload-profile-img/" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             {% comment %} Image {% endcomment %}
             <div id="profile-img-div" class="mb-3">
-                <img src="" class="rounded-circle full-width" id="profile-img" alt=" "/>
+                <img src="{{ request.session.user.avatar_url }}" class="rounded-circle full-width" id="profile-img" alt=" "/>
             </div>
             
             {% comment %} Image loading {% endcomment %}
             <div id="upload-form">
                 <label for="upload-file" class="h5 fa fa-file-import profile-btn rounded-circle ms-1 me-1"></label>
-                <input class="form-control" type="file" id="upload-file" style="display: none;" accept="image/png, image/jpeg" 
+                <input class="form-control" type="file" name="avatar" id="upload-file" style="display: none;" accept="image/png, image/jpeg" 
                     onchange="load_img(event, 'profile-img')">
 
                 <button type="submit" class="profile-btn rounded-circle ms-1 me-1 fa fa-check" id="image-save-btn"></button>
@@ -42,31 +43,25 @@
                 <div class="form-group row mb-2 d-flex align-items-center">
                     <label for="fname" class="col-sm-3 col-form-label text-start">First name:</label>
                     <div class="col-sm-9">
-                      <input type="text" id="fname" name="first_name" value="TODO_ID_{{ request.session.member_id }}">
+                      <input type="text" id="fname" name="first_name" value="{{ request.session.user.first_name }}">
                     </div>
                 </div>
                 <div class="form-group row mb-2 d-flex align-items-center">
                     <label for="lname" class="col-sm-3 col-form-label text-start">Last name:</label>
                     <div class="col-sm-9">
-                      <input type="text" id="lname" name="last_name" value="todo_last">
+                      <input type="text" id="lname" name="last_name" value="{{ request.session.user.last_name }}">
                     </div>
                 </div>
                 <div class="form-group row mb-2 d-flex align-items-center">
                     <label for="email" class="col-sm-3 col-form-label text-start">Email:</label>
                     <div class="col-sm-9">
-                      <input type="email" name="email" id="email" value="todo@todo.com">
+                      <input type="email" name="email" id="email" value="{{ request.session.user.email }}">
                     </div>
                 </div>
                 <div class="form-group row mb-2 d-flex align-items-center">
                     <label for="birthday" class="col-sm-3 col-form-label text-start">Date of birth:</label>
                     <div class="col-sm-9">
                       <input type="date" name="email" id="birthdate" value="">
-                    </div>
-                </div>
-                <div class="form-group row mb-5 d-flex align-items-center">
-                    <label for="phone" class="col-sm-3 col-form-label text-start">Phone:</label>
-                    <div class="col-sm-9">
-                      <input type="tel" name="phone" id="phone" pattern="[0-9]{9}">
                     </div>
                 </div>
 
@@ -76,10 +71,10 @@
                         <label for="password" class="col-4 col-form-label text-start">Password:</label>
                         <div class="col-8">
                             <div class="d-flex align-items-center">
-                                <input type="password" name="password" id="password" value="todo12324" style="">
+                                <input type="password" name="old_password" id="old_password" value="" style="">
                                 
                                 <label for="show1" class="fa fa-eye text-muted ps-3"></label>
-                                <input class="form-check-input" id="show1" type="checkbox" onclick="show_password('password')" style="display: none;"/>
+                                <input class="form-check-input" id="show1" type="checkbox" onclick="show_password('old_password')" style="display: none;"/>
                             </div>
                         </div>
                     </div>

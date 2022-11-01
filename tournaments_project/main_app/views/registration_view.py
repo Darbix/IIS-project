@@ -1,16 +1,16 @@
-from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.hashers import make_password
-from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
 from django.db import IntegrityError
 from django.views.generic import TemplateView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 from ..models import RegisteredUser
 
 class AddUser(TemplateView):
-    index_template_name = 'main_app/login_user.html'
-    template_name = 'main_app/add_user.html'
+    template_name = 'main_app/register_user.html'
+    login_page = 'login_user'
 
     def get(self, request):
         return render(request, self.template_name)
@@ -19,6 +19,12 @@ class AddUser(TemplateView):
         if "first_name" not in request.POST or "last_name" not in request.POST\
         or "email" not in request.POST or "password" not in request.POST:
             # TODO: Error hláška - chybějící argument
+            return render(request, self.template_name)
+
+        try:
+            validate_email(request.POST["email"])
+        except ValidationError as _:
+            # TODO: Error hláška - nevalidní email
             return render(request, self.template_name)
         
         encryptedPassword = make_password(request.POST["password"])
@@ -33,5 +39,4 @@ class AddUser(TemplateView):
         except IntegrityError as e:
             # TODO: Error hláška - email je již používán
             pass
-
-        return render(request, self.index_template_name)
+        return redirect(self.login_page)
