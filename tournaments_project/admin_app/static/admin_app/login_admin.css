@@ -1,0 +1,52 @@
+/* Login content box  */
+#form-box{
+    text-align: center;
+    min-width: 450px;
+    max-width: 600px;
+    color: var(--color-bg);
+    background: linear-gradient(110deg, var(--color-light) 60%, #e0e0e0 60%);
+    padding: 60px 50px;
+    margin: 0 auto;
+    border-radius: 10px;
+}
+
+/* User symbol */
+#user-icon{
+    font-size: 100px;
+    opacity: 0.6;
+}
+
+/* Except the checkbox, remove input line styles */
+#form-box input:not([type="checkbox"]){
+    /* Disable a text line border */
+    background-color: transparent !important;
+    box-shadow: none;
+    border: none;
+    border-bottom: 5px solid var(--color-bg);
+    border-radius: 0;
+}
+
+/* Remember-me checkbox */
+.remember-me{
+    border: none;
+    background: var(--color-bg);
+    opacity: 0.6;
+}
+
+.remember-me.form-check-input:checked{
+    background-color: var(--color2) !important;
+    opacity: 1;
+}
+
+/* Main submit button */
+#form-box > form .btn{
+    background: var(--color2);
+    border: none;
+    padding: 10px 25px;;
+    font-size: 20px;
+}
+
+/* All references */
+#form-box a{
+    color: var(--color2);
+}
