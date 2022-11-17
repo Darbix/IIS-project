@@ -61,7 +61,7 @@
                 <div class="form-group row mb-2 d-flex align-items-center">
                     <label for="birthday" class="col-sm-3 col-form-label text-start">Date of birth:</label>
                     <div class="col-sm-9">
-                      <input type="date" name="email" id="birthdate" value="">
+                      <input type="date" name="birthdate" id="birthdate" value="{{ request.session.user.birth_date }}">
                     </div>
                 </div>
 

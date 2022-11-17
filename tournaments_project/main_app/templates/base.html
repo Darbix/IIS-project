@@ -1,4 +1,5 @@
 {% load static %}
+{% load tags %}
 <!DOCTYPE html>
 
 <html>
@@ -38,10 +39,10 @@
             {% comment %} Center navigation buttons {% endcomment %}
             <div class="collapse navbar-collapse" id="navigation">
                 <div class="navbar-nav mx-auto">
-                    <a class="nav-link active" href="/"><span class="fa fa-home"></span>Home</a>
-                    <a class="nav-link" href="#"><span class="fa fa-gamepad"></span>Events</a>
-                    <a class="nav-link" href="#"><span class="fa fa-trophy"></span>Leaderboard</a>
-                    <a class="nav-link" href="#"><span class="fa fa-chess"></span>Games</a>
+                    <a class="nav-link {% if request.path == "/" %}active{% endif %}" href="/"><span class="fa fa-home"></span>Home</a>
+                    <a class="nav-link {% if request.path|startswith:"/events" %}active{% endif %}" href="/events"><span class="fa fa-gamepad"></span>Events</a>
+                    <a class="nav-link {% if request.path|startswith:"/results" %}active{% endif %}" href="/results "><span class="fa fa-trophy"></span>Results</a>
+                    <a class="nav-link {% if request.path|startswith:"#" %}active{% endif %}" href="#"><span class="fa fa-chess"></span>Games</a>
                 </div>
                 <div id="navbar-right-gap">
                 </div>
@@ -62,11 +63,12 @@
             {% comment %} Right sidebar menu {% endcomment %}
             <div id="sidebar-menu">
                 <div id="sidebar-user">
-                    {% if request.session.user == None %}Welcome{% else %}{{ request.session.user.first_name }} {{ request.session.user.last_name }}{% endif %}
+                    {% if request.session.user == None %}Welcome{% else %}{{ request.session.user.first_name }}&nbsp;{{ request.session.user.last_name }}{% endif %}
                 </div>
                 <ul class="sidebar-nav">
                     {% if request.session.user != None %}
                         <li><a href="/user-profile/"><span class="fa fa-address-card"></span>Profile</a></li>
+                        <li><a href="/user-teams/"><span class="fa fa-people-group"></span>Teams</a></li>
                         <li><a href="#"><span class="fa fa-gear"></span>Settings</a></li>
                     {% endif %}
                     <li class="log-in-out">

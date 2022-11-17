@@ -1,6 +1,6 @@
 from django.urls import path
 # from . import views
-from .views import login_view, main_view, registration_view, profile_view, logout_view
+from .views import login_view, main_view, registration_view, profile_view, logout_view, events_view, event_view, teams_view
 
 urlpatterns = [
     path('', main_view.index, name='index'),
@@ -9,4 +9,10 @@ urlpatterns = [
     path('logout-user/', logout_view.LogoutUser.as_view(), name='logout_user'),
     path('user-profile/', profile_view.Profile.as_view(), name='user_profile'),
     path('upload-profile-img/', profile_view.ProfileImageUpload.as_view(), name='upload_user_image'),
+    path('user-teams/', teams_view.Teams.as_view(), name='user_teams'),
+
+    path('events/', events_view.Events.as_view(), name='events'),
+    path('events/<int:event_id>/', event_view.Event.as_view(), name='event'),
+    path('events/<int:event_id>/join/', event_view.Event.as_view(), name='join_tournament'),
+    path('events/<int:event_id>/unjoin/', event_view.EventUnjoin.as_view(), name='unjoin_tournament'),
 ]
