@@ -1,0 +1,154 @@
+.title-box{
+    margin: 7px 0;
+}
+
+.head-title{
+    height: 50px;
+}
+
+.icon-box{
+    background: var(--color1);
+    color: var(--color-bg);
+    width: 50px;
+    height: 50px;
+    padding: 2px;
+    font-size: 33px;
+    border-radius: 25px;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.heading{
+    background: var(--color1);
+    color: var(--color-bg);
+    width: 270px;
+    padding: 0 15px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 24px;
+    height: 100%;
+    line-height: 50px;
+}
+
+h1{
+    font-family: var(--font1) !important;
+    font-size: 32px !important;
+}
+
+.info-content-box{
+    padding: 0 15px;
+    line-height: 50px;
+}
+
+.info-content-box p{
+    /* display: inline-block; */
+    vertical-align: middle;
+    line-height: 30px;
+    padding: 7px 0 0 0;
+}
+
+#btn-join{
+    background: var(--color2);
+    color: var(--color-bg);
+    width: 60px;
+    height: 60px;
+    font-size: 38px;
+    border-radius: 30px;
+    border: none;
+    line-height: 60px;
+}
+
+#btn-join:hover{
+    box-shadow: inset 0 0 60px 60px rgba(255, 255, 255, 0.3);
+}
+
+#btn-unjoin{
+    line-height: 50px;
+    font-size: 38px;
+    color: var(--color2);
+    margin-right: 15px;
+    background: transparent;
+    border: none;
+}
+
+#team-box{
+    background: var(--color-box);
+    border-radius: 5px;
+}
+
+#team-name{
+    color: var(--color2);
+    font-weight: bold;
+}
+
+#team-header{
+    height: 70px;
+    background: var(--color-bg);
+    border-radius: 35px;
+}
+
+/* Team avatar picture frame */
+#profile-img-div{
+    width: 70px;
+    height: 70px;
+    background: var(--color-bg);
+    border-radius: 35px;
+    position: relative;
+}
+
+.small-img{
+    width: 50px !important;
+    height: 50px !important;
+}
+
+/* Team avatar picture */
+#profile-img{
+    width: 70px;
+    height: 70px;
+}
+
+#profile-img::before {  
+    font-family: "Font Awesome 6 free";     
+    content: "\f2bd";
+    font-size: 35px;
+    line-height: 100%;
+    font-weight: bold;
+    color: var(--color-box);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg); 
+}
+
+#profile-img.small-img::before{
+    width: 50px !important;
+    height: 50px !important;
+}
+
+.player-box{
+    margin: 0 10px;
+    background: var(--color-box-header);
+    border-radius: 25px;
+    min-height: 50px;
+    overflow: hidden;
+}
+
+.email-div, .name-div{
+    overflow-x: scroll;
+    -ms-overflow-style: none;  /* Hide scrollbar on IE, Edge */
+    scrollbar-width: none;  /* Hide scrollbar on Firefox */
+    /* width: 400px; */
+}
+
+/* Hide scrollbar on Chrome, Safari and Opera */
+.email-div::-webkit-scrollbar,
+.name-div::-webkit-scrollbar{
+    display: none;
+}

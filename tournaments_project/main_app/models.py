@@ -21,7 +21,7 @@ class TournamentType(models.Model):
 class Tournament(models.Model):
     name = models.CharField(max_length=64)
     description = models.TextField(default='')
-    date = models.DateField()
+    date = models.DateTimeField()
     prize = models.CharField(max_length=64)
 
     type = models.ForeignKey(TournamentType, on_delete=models.CASCADE)

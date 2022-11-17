@@ -13,6 +13,9 @@ def index(request):
     return HttpResponse(loader.get_template('main_app/index.html').render(args, request))
 
 
+def handler404(request, exception):
+    return HttpResponse(loader.get_template("page_not_found.html").render(None, request))
+
 # TODO Temp renders
 def register_todo(request):
    return HttpResponse(loader.get_template('main_app/register_user.html').render(None, request))

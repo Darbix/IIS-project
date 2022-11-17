@@ -20,7 +20,6 @@ function toggle_edit(btn_id, field_id, form_id, cancel_id, action){
         cancel.hidden = false;
     }
     else{
-        field.disabled = true;
         btn.classList.toggle("fa-pen-to-square")
         btn.classList.toggle("fa-check")
 
@@ -30,6 +29,8 @@ function toggle_edit(btn_id, field_id, form_id, cancel_id, action){
             form.submit();
         else
             form.reset();
+            
+        field.disabled = true;
     }
 }
 
