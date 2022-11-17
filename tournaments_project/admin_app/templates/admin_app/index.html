@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'admin_app/index.css' %}" />
+{% endblock %}
+
+{% block main-content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="container mb-4 main-box">
+                <div class="container header-box">
+                    <h2>User list</h2>
+                </div>
+                    {% for user in users %}
+                        <form action="delete-user/" method="POST" id="form-users">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ user.id }}">
+                            <div class="row">
+                                <div class="col-12 d-flex align-items-center">
+                                    <span class="fa fa-circle mx-4 mb-1 circle"></span>
+                                    <div  class="row flex-fill">
+                                        <div class="col-1 column">
+                                            <span class="mb-2">{{ user.id }}</span>
+                                        </div>                   
+                                        <div class="col-6 column">
+                                            <span class="mb-2">{{ user.first_name }}&nbsp;{{ user.last_name }}</span>
+                                        </div>
+                                        <div class="col-5 column">
+                                            <span class="mb-2">{{ user.email }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex">
+                                        <button type="submit" class="btn mb-1 btn-admin" id="btn-admin">
+                                            <i class="fa-solid fa-network-wired"></i>
+                                        </button>
+                                        
+                                        <button type="submit" class="btn mb-1 btn-delete" id="btn-delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    {% endfor %}
+            </div>
+            <div class="container mb-4 main-box">
+                <div class="container header-box">
+                    <h2>Admin list</h2>
+                </div>
+                    {% for admin in admins %}
+                        <form action="delete-user/" method="POST" id="form-users">
+                            {% csrf_token %}
+                            <input type="hidden" name="id" value="{{ admin.id }}">
+                            <div class="row">
+                                <div class="col-12 d-flex align-items-center">
+                                    <span class="fa fa-circle mx-4 mb-1 circle"></span>
+                                    <div  class="row flex-fill">
+                                        <div class="col-1 column">
+                                            <span class="mb-2">{{ admin.id }}</span>
+                                        </div>                   
+                                        <div class="col-6 column">
+                                            <span class="mb-2">{{ admin.first_name }}&nbsp;{{ admin.last_name }}</span>
+                                        </div>
+                                        <div class="col-5 column">
+                                            <span class="mb-2">{{ admin.email }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex">
+                                        <button type="submit" class="btn mb-1 btn-admin" id="btn-admin">
+                                            <i class="fa-solid fa-network-wired"></i>
+                                        </button>
+                                        
+                                        <button type="submit" class="btn mb-1 btn-delete" id="btn-delete">
+                                            <i class="fa-solid fa-trash-can"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
