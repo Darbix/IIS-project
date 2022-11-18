@@ -1,0 +1,84 @@
+{% load static %}
+{% load tags %}
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="{% static 'main_app/base.css' %}" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+
+    <script src="{% static 'admin_app/base.js' %}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js"></script>
+
+    {% block head-extension %}
+    {% endblock %}
+</head>
+
+<body>
+    {% comment %} Navigation panel {% endcomment %}
+    {% comment %} Change hide_navigation() navbar_expand_xl value if replaced by another {% endcomment %}
+    <nav class="navbar navbar-expand-xl">
+        {% comment %} Logo {% endcomment %}
+        <div id="navbar-brand-div">
+            <a class="navbar-brand" href="/admin">
+                <div>
+                    Admin
+                </div>
+                <div id="div-brand-manager">
+                    Dashboard
+                </div>
+            </a>
+        </div>
+        
+        {% if request.session.admin != None %}
+        {% comment %} Panel parts {% endcomment %}
+        <div class="container-fluid" id="panel">
+            {% comment %} Top right buttons {% endcomment %}
+            <div id="nav-right">
+                <button class="btn fa fa-user" type="button" onclick="menu_toggle()" data-bs-toggle="collapse" data-bs-target="#navbar" aria-expanded="false" aria-controls="navbar"/>
+            </div>
+        </div>
+        {% endif %}
+    </nav>
+
+    {% comment %} Body content container {% endcomment %}
+    <div id="main-container" class="toggled">
+        {% if request.session.admin != None %}
+        <div class="container-fluid">
+            {% comment %} Right sidebar menu {% endcomment %}
+            <div id="sidebar-menu">
+                <div id="sidebar-user">
+                    {{ request.session.admin.first_name }} {{ request.session.admin.last_name }}
+                </div>
+                <ul class="sidebar-nav">
+                    <li><a href="/admin/"><span class="fa fa-area-chart"></span>Home</a></li>
+                    <li><a href="/admin/query/"><span class="fa fa-magnifying-glass"></span>Query</a></li>
+                    <li><a href="#"><span class="fa fa-gear"></span>Settings</a></li>
+                    <li class="log-in-out"><a href="/admin/logout/"><span class="fa fa-right-to-bracket"></span>Log out</a></li>
+                </ul>
+                <div id="sidebar-menu-rest">
+                </div>
+            </div>
+            {% endif %}
+            
+            {% comment %} Page content {% endcomment %}
+            <div id="page-content">
+                {% block page-content %}
+
+                    {% comment %} Centered body container {% endcomment %}
+                    <div id="main-content" class="container">
+                        {% block main-content %}
+
+                        {% endblock %}
+                    </div>
+
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

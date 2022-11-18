@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'admin_app/base.html' %}
 
 {% load static %}
     
@@ -19,7 +19,7 @@
         <div class="fa fa-user mb-4" id="user-icon">
         </div>
         
-        <form action="/login-user/" method="post">
+        <form action="/admin/login/" method="post">
             {% csrf_token %}
             <div class="form-outline mb-5">
                 <input type="email" class="form-control" name="email" placeholder="Email"/>
@@ -28,20 +28,6 @@
             <div class="form-outline mb-5">
                 <input type="password" class="form-control" name="password" placeholder="Password"/>
             </div>
-            
-            <div class="row mb-4">
-                <div class="col-6 d-flex justify-content-center">
-                    <div class="form-check">
-                        <input class="form-check-input remember-me" type="checkbox"/>
-                        <span>Remember me</span>
-                    </div>
-                </div>
-            
-                <div class="col-6">
-                    <a href="#">Forgot password?</a>
-                </div>
-            </div>
-            
             <button type="submit" class="btn btn-primary mb-4" id="btn-login">Log in</button>
         </form>
 

@@ -1,0 +1,80 @@
+{% extends 'admin_app/base.html' %}
+
+{% load static %}
+
+{% block head-extension %}
+    <script type="text/javascript" src="{% static 'admin_app/query.js' %}"></script>
+{% endblock %}
+
+{% block main-content %}
+    <h1>Query</h1>
+
+    <div class="mx-auto mg-3 pb-3 w-50 card bg-dark">
+        <form action="" method="post">
+            {% csrf_token %}
+            <div class="row pb-2 card-body">
+                <div class="col">
+                    <label for="table">Table</label>
+                    <select class="form-control form-control-lg" name="table" id="table_dropdown">
+                        {% for table_name in table_names %}
+                        <option value="{{ table_name.0 }}" onclick="UpdateDropdown('{{ table_name.0 }}')">{{ table_name.0 }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col">
+                    {% for table_name in table_names %}
+                    <div id="sort_by_{{ table_name.0 }}" hidden="true">
+                        <label for="sort_by">Sort by</label>
+                        <select class="form-control form-control-lg" name="sort_by" id="sort_by_selection_{{ table_name.0 }}" disabled="true">
+                            {% for column in table_name.1 %}
+                            <option value="{{ column }}">{{ column }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="row card-body">
+                <div class="col">
+                    <button type="submit" class="btn btn-lg btn-primary">Query</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    {% if table %}
+    <h2>{{ table }}</h2>
+    {% if table_data %}
+    <div class="table-responsive">
+        <table class="table-sm table-dark">
+            <thead>
+                <tr>
+                    <th>
+                        id
+                    </th>
+                    {% for key in table_data.0.fields %}
+                    <th>
+                        {{ key }}
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in table_data %}
+                <tr>
+                    <td> {{ row.pk }} </td>
+                    {% for _, value in row.fields.items %}
+                    <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <h2>No data</h2>
+    {% endif %}
+    {% endif %}
+{% endblock %}
