@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import date
+from datetime import datetime
 
 class RegisteredUser(models.Model):
     # Vyžadované
@@ -8,10 +8,10 @@ class RegisteredUser(models.Model):
     email = models.CharField(max_length=64, unique=True)
     password = models.CharField(max_length=88)
     # Nastavitelné po registraci
-    birth_date = models.DateField(default=date.min)
+    birth_date = models.DateField(default=datetime(1970, 1, 1))
     avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png')
     description = models.TextField(blank=True)
-    join_date = models.DateField(default=date.today)
+    join_date = models.DateField(default=datetime.now())
 
 # Pouze administrátor může vytvářet typy turnajů, které je možné hrát.
 # Z těchto typů si následně správce turnajů můžou vybírat
@@ -23,11 +23,13 @@ class Tournament(models.Model):
     description = models.TextField(default='')
     date = models.DateTimeField()
     prize = models.CharField(max_length=64)
+    capacity = models.PositiveIntegerField(blank=False)
 
     type = models.ForeignKey(TournamentType, on_delete=models.CASCADE)
     state = models.PositiveSmallIntegerField(
         choices=(
-            (1, 'Created'),
+            (0, 'Unconfirmed'),
+            (1, 'Confirmed'),
             (2, 'Ongoing'),
             (3, 'Finished')
         )
@@ -43,6 +45,7 @@ class UserTournamentModerator(models.Model):
 class Team(models.Model):
     name = models.CharField(max_length=64)
     owner = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE)
 
 # Ukládání týmů. Uživatel může být ve více týmech zároveň a týmy mají několik uživatelů
 class UserTeam(models.Model):

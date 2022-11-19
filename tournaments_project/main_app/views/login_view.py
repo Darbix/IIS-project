@@ -39,9 +39,9 @@ class LoginUser(TemplateView):
             'last_name': user.last_name,
             'email': user.email,
             'description': user.description,
-            'birth_date': user.birth_date.strftime("%d-%m-%Y"),
+            'birth_date': user.birth_date.strftime("%Y-%m-%d"),
             'avatar_url': user.avatar.url,
-            'join_date': user.join_date.strftime("%d-%m-%Y"),
+            'join_date': user.join_date.strftime("%Y-%m-%d"),
         }
 
         return redirect(self.index_page)

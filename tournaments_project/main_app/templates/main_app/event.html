@@ -9,7 +9,7 @@
 
 {% block main-content %}
 
-    <h1 class="mb-3">{{ event.info.name }}</h1>
+    <h1 class="mb-3">{{ event.name }}</h1>
 
     <div class="row title-box">
         <div class="col-lg-4 head-title d-flex align-items-center">
@@ -17,7 +17,7 @@
             <div class="heading">Date</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            {{ event.info.date | date:"d.m. Y, H:i" }}
+            {{ event.date | date:"d. m. Y, H:i" }}
         </div>
     </div>
 
@@ -27,7 +27,7 @@
             <div class="heading">Type</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            {{ event.type }}
+            {{ event.type.type }}
         </div>
     </div>
 
@@ -37,7 +37,7 @@
             <div class="heading">Description</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            <p>{{ event.info.description }}</p>
+            <p>{{ event.description }}</p>
         </div>
     </div>
 
@@ -47,17 +47,17 @@
             <div class="heading">Prize</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            {{ event.info.prize }}
+            {{ event.prize }}
         </div>
     </div>
 
     <div class="row title-box">
         <div class="col-lg-4 head-title d-flex align-items-center">
             <div class="icon-box"><i class="fa-solid fa-star-half-stroke"></i></div>
-            <div class="heading">Capacity?</div>
+            <div class="heading">Capacity</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            x / y
+            {{ event.capacity }}
         </div>
     </div>
 
@@ -67,7 +67,7 @@
             <div class="heading">Min team members</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            {{ event.info.minimum_team_size }}
+            {{ event.minimum_team_size }}
         </div>
     </div>
 
@@ -77,7 +77,7 @@
             <div class="heading">Max team members</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            {{ event.info.maximum_team_size }}
+            {{ event.maximum_team_size }}
         </div>
     </div>
 
@@ -91,7 +91,7 @@
                     <div id="profile-img-div" class="me-3">
                         <img src="/media/avatars/default.png" class="rounded-circle full-width" id="profile-img" alt=" "/>
                     </div>
-                    {% if event.info.minimum_team_size == 1%}Team&nbsp;{% endif %}<span id="team-name">TEAM_NAME</span>
+                    {% if event.minimum_team_size == 1%}Team&nbsp;{% endif %}<span id="team-name">TEAM_NAME</span>
 
                     {% comment %} Unjoin the player or a team from the tournament {% endcomment %}
                     <button class="ms-auto" id="btn-unjoin">
