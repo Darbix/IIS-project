@@ -15,7 +15,7 @@
         {% for event in events %}
             {% comment %} If a month is not in the section, print new {% endcomment %}
             {% if month_n != event.date.month %}
-                <h1 class="mt-3 mb-2">{{ event.info.date | date:"F" }} {{ event.date | date:"Y" }}</h1>
+                <h1 class="mt-3 mb-2">{{ event.date | date:"F" }} {{ event.date | date:"Y" }}</h1>
                 {% update_var event.date.month as month_n %}
             {% endif %}
 
