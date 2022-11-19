@@ -3,12 +3,169 @@
 {% load static %}
 
 {% block head-extension %}
-    {% comment %} <link rel="stylesheet" href="{% static 'main_app/event.css' %}" /> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'main_app/user_teams.css' %}" />
 {% endblock %}
 
 
 {% block main-content %}
 
-    hello
+    <div class="form-check form-switch mb-3 ">
+        <input class="form-check-input" type="checkbox" id="toggle-view">
+        <label for="toggle-view">View old teams</label>
+    </div>
 
+    {% comment %} Teams where a player is an owner {% endcomment %}
+    <h3 class="mt-4">My own teams</h3>
+    {% for team in own_teams %}
+        <div class="team-box p-3 mb-2">
+            <form method="POST" action="unjoin/">
+                {% csrf_token %}
+                <div class="d-flex align-items-center h4 team-header mb-1">
+                    <div class="profile-img-div me-3">
+                        <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
+                    </div>
+
+                    <span class="team-name">{{ team.info.name }}</span>
+                    
+                    <i class="ms-auto fa-solid fa-right-to-bracket me-2 ps-2 event-icon"></i>
+
+                    <a href="/events/{{ team.event.id }}" class="event-ref">
+                        <div class="event-ref-text">{{ team.event.name }}</div>
+                    </a>
+
+                    {% comment %} Unjoin a team from the tournament {% endcomment %}
+                    <button class="btn-unjoin ms-2 me-3" type="submit">
+                        <span class="fa-solid fa-circle-minus"></span>
+                    </button>
+                </div>
+            <form>
+
+            {% comment %} TODO load players in team or one individual as a list {% endcomment %}
+            {% for member in team.members %}
+                <div class="player-box mt-1">
+                    <div class="d-flex align-items-center">
+                        <div class="profile-img-div small-img">
+                            {% comment %} TODO /media/ should probably not be here {% endcomment %}
+                            <img src="/media/{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                        </div>
+                        
+                        <div class="row ms-4 w-100">
+                            <div class="col-lg-6 overflow-hidden">
+                                <div class="name-div fw-bold {% if member.id == request.session.user.id %}color-user{% endif %}">
+                                    {{ member.first_name }}&nbsp;{{ member.last_name }}
+                                </div>
+                            </div>
+                            <div class="col-lg-6 overflow-hidden">
+                                <div class="email-div">
+                                    {{ member.email }}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="width: 25px" class="me-2">
+                            {% if member.id == team.info.owner.id %}<i class="fa-solid fa-crown text-warning"></i>{% endif %}
+                        </div>
+                        
+                        <form method="POST" action="remove-teammate">
+                            <input type="hidden" name="player_id" value="{{ member.id }}"/>
+                            <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
+
+                            <button class="btn-default" type="submit">
+                                <span class="fa-solid fa-circle-xmark"></span>
+                            </button>
+                        <form>
+                    </div>
+                </div>
+            {% endfor %}
+            <div class="d-flex align-items-center mt-3 me-2">
+                Add a teammate
+                <form method="POST" action="add-teammate">
+                    <input type="hidden" name="player_id" value="{{ member.id }}"/>
+                    <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
+
+                    <button class="btn-default btn-add-teammate ms-2" type="submit">
+                        <span class="fa-solid fa-circle-plus"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    {% endfor %}
+
+
+    {% comment %} Teams a player is in {% endcomment %}
+    <h3 class="mt-5">Fellow teams</h3>
+    {% for team in fellow_teams %}
+        <div class="team-box p-3 mb-2">
+            <form method="POST" action="unjoin/">
+                {% csrf_token %}
+                <div class="d-flex align-items-center h4 team-header mb-1">
+                    <div class="profile-img-div me-3">
+                        <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
+                    </div>
+
+                    <span class="team-name">{{ team.info.name }}</span>
+                    
+                    <i class="ms-auto fa-solid fa-right-to-bracket me-2 ps-2 event-icon"></i>
+
+                    <a href="/events/{{ team.event.id }}" class="event-ref wider-size">
+                        <div class="event-ref-text">{{ team.event.name }}</div>
+                    </a>
+                </div>
+            <form>
+
+            {% comment %} TODO load players in team or one individual as a list {% endcomment %}
+            {% for member in team.members %}
+                <div class="player-box mt-1">
+                    <div class="d-flex align-items-center">
+                        <div class="profile-img-div small-img">
+                            <img src="/media/avatars/default.png" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                            {% comment %} {{ request.session.user.avatar_url }} {% endcomment %}
+                        </div>
+                        
+                        <div class="row ms-4 w-100">
+                            <div class="col-lg-6 overflow-hidden">
+                                <div class="name-div fw-bold {% if member.id == request.session.user.id %}color-user{% endif %}">
+                                    {{ member.first_name }}&nbsp;{{ member.last_name }}
+                                </div>
+                            </div>
+                            <div class="col-lg-6 overflow-hidden">
+                                <div class="email-div">
+                                    {{ member.email }}
+                                </div>
+                            </div>  
+                        </div>
+                        <div style="width: 25px" class="me-2">
+                            {% if member.id == team.info.owner.id %}<i class="fa-solid fa-crown text-warning"></i>{% endif %}
+                        </div>
+                        
+                        {% if member.id == request.session.user.id %}
+                            <form method="POST" action="remove-teammate">
+                                <input type="hidden" name="player_id" value="{{ member.id }}"/>
+                                <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
+
+                                <button class="btn-default" type="submit">
+                                    <span class="fa-solid fa-circle-xmark"></span>
+                                </button>
+                            <form>
+                        {% else %}
+                            <div class="btn-default bg-transparent"></div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+
+    
+    <script>
+        {% comment %} function toggle_old_view() {
+            var checkBox = document.getElementById("toggle-view");
+            
+            if (checkBox.checked == true){
+            
+            } 
+            else {
+            
+            }
+        } {% endcomment %}
+    </script>
 {% endblock %}
