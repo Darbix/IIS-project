@@ -62,7 +62,7 @@
         <div class="container-fluid">
             {% comment %} Right sidebar menu {% endcomment %}
             <div id="sidebar-menu">
-                <div id="sidebar-user">
+                <div id="sidebar-user" class="overflow-hidden">
                     {% if request.session.user == None %}Welcome{% else %}{{ request.session.user.first_name }}&nbsp;{{ request.session.user.last_name }}{% endif %}
                 </div>
                 <ul class="sidebar-nav">

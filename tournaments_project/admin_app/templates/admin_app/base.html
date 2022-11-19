@@ -51,8 +51,8 @@
         <div class="container-fluid">
             {% comment %} Right sidebar menu {% endcomment %}
             <div id="sidebar-menu">
-                <div id="sidebar-user">
-                    {{ request.session.admin.first_name }} {{ request.session.admin.last_name }}
+                <div id="sidebar-user" class="overflow-hidden">
+                    {{ request.session.admin.first_name }}&nbsp;{{ request.session.admin.last_name }}
                 </div>
                 <ul class="sidebar-nav">
                     <li><a href="/admin/"><span class="fa fa-area-chart"></span>Home</a></li>
