@@ -6,21 +6,38 @@ def insert_initial_user(apps, schema_editor):
     RegisteredUser = apps.get_model('main_app', 'RegisteredUser')
 
     from django.contrib.auth.hashers import make_password
-    test_user = RegisteredUser(
-        first_name = "FirstName",
-        last_name = "LastName",
-        email = "test@test.com",
-        password = make_password("123456")
-    )
-    test_user2 = RegisteredUser(
-        first_name = "Jan",
-        last_name = "Novak",
-        email = "test2@test.com",
-        password = make_password("123456")
-    )
+    test_user = [
+        RegisteredUser(first_name = "FirstName", last_name = "LastName",
+            email = "test@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Jan", last_name = "Novak",
+            email = "test2@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Karel", last_name = "Novak",
+            email = "test3@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Karel", last_name = "Kocourek",
+            email = "test4@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Martin", last_name = "Novak",
+            email = "test5@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Alžběta", last_name = "Nováková",
+            email = "test6@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Martina", last_name = "Nováková",
+            email = "test7@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Martin", last_name = "David",
+            email = "test8@test.com", password = make_password("123456")
+        ),
+        RegisteredUser(first_name = "Alžběta", last_name = "Nováková",
+            email = "test9@test.com", password = make_password("123456")
+        )
+    ]
     try:
-        test_user.save()
-        test_user2.save()
+        for user in test_user:
+            user.save()
     except Exception as e:
         print(e)
 
@@ -110,13 +127,15 @@ def insert_initial_tournament_team(apps, schema_editor):
     users = RegisteredUser.objects.all()
     teams = Team.objects.all()
 
-    ut = UserTeam(
-        user = users[1],
-        team = teams[0]
-    )
-    ut.save()
-
-
+    uts = [
+        UserTeam(user = users[1], team = teams[0]),
+        UserTeam(user = users[2], team = teams[0])
+    ]
+    try:
+        for ut in uts:
+            ut.save()
+    except:
+        pass
 
 """
     RegisteredUser = apps.get_model('main_app', 'RegisteredUser')

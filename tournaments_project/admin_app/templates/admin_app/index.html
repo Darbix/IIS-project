@@ -7,83 +7,57 @@
 {% endblock %}
 
 {% block main-content %}
-    <div class="row">
-        <div class="col-12">
-            <div class="container mb-4 main-box">
-                <div class="container header-box">
-                    <h2>User list</h2>
-                </div>
-                    {% for user in users %}
-                        <form action="delete-user/" method="POST" id="form-users">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ user.id }}">
-                            <div class="row">
-                                <div class="col-12 d-flex align-items-center">
-                                    <span class="fa fa-circle mx-4 mb-1 circle"></span>
-                                    <div  class="row flex-fill">
-                                        <div class="col-1 column">
-                                            <span class="mb-2">{{ user.id }}</span>
-                                        </div>                   
-                                        <div class="col-6 column">
-                                            <span class="mb-2">{{ user.first_name }}&nbsp;{{ user.last_name }}</span>
-                                        </div>
-                                        <div class="col-5 column">
-                                            <span class="mb-2">{{ user.email }}</span>
-                                        </div>
-                                    </div>
+<div class="container">
+    <h1>Statistics</h1>
+</div>
 
-                                    <div class="d-flex">
-                                        <button type="submit" class="btn mb-1 btn-admin" id="btn-admin">
-                                            <i class="fa-solid fa-network-wired"></i>
-                                        </button>
-                                        
-                                        <button type="submit" class="btn mb-1 btn-delete" id="btn-delete">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    {% endfor %}
+<div class="container">
+    <div class="card-group">
+        <div class="card bg-dark" style="max-width:20rem">
+            <div class="card-header font-weight-bold">
+                Tournaments
             </div>
-            <div class="container mb-4 main-box">
-                <div class="container header-box">
-                    <h2>Admin list</h2>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <p class="card-text font-weight-normal">
+                            Unconfirmed<br/>
+                            Confirmed<br/>
+                            Ongoing<br/>
+                            Finished<br/>
+                        </p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="card-text">
+                            <span class={% if tournaments_count.0 > 0 %}"text-warning"{% else %}"text-success"{% endif %}>{{ tournaments_count.0 }}</span><br/>
+                            <span class="text-success">{{ tournaments_count.1 }}</span><br/>
+                            <span class="text-success">{{ tournaments_count.2 }}</span><br/>
+                            <span class="text-success">{{ tournaments_count.3 }}</span><br/>
+                        </p>
+                    </div>
                 </div>
-                    {% for admin in admins %}
-                        <form action="delete-user/" method="POST" id="form-users">
-                            {% csrf_token %}
-                            <input type="hidden" name="id" value="{{ admin.id }}">
-                            <div class="row">
-                                <div class="col-12 d-flex align-items-center">
-                                    <span class="fa fa-circle mx-4 mb-1 circle"></span>
-                                    <div  class="row flex-fill">
-                                        <div class="col-1 column">
-                                            <span class="mb-2">{{ admin.id }}</span>
-                                        </div>                   
-                                        <div class="col-6 column">
-                                            <span class="mb-2">{{ admin.first_name }}&nbsp;{{ admin.last_name }}</span>
-                                        </div>
-                                        <div class="col-5 column">
-                                            <span class="mb-2">{{ admin.email }}</span>
-                                        </div>
-                                    </div>
+            </div>
+        </div>
 
-                                    <div class="d-flex">
-                                        <button type="submit" class="btn mb-1 btn-admin" id="btn-admin">
-                                            <i class="fa-solid fa-network-wired"></i>
-                                        </button>
-                                        
-                                        <button type="submit" class="btn mb-1 btn-delete" id="btn-delete">
-                                            <i class="fa-solid fa-trash-can"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    {% endfor %}
+        <div class="card bg-dark" style="max-width:20rem">
+            <div class="card-header font-weight-bold">
+                Users
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="card-text font-weight-normal">
+                            Registered<br/>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="card-text">
+                            <span class="text-success">{{ user_count }}</span><br/>
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
+</div>
 {% endblock %}

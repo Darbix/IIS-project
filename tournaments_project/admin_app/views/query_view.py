@@ -21,7 +21,6 @@ class QueryTable(TemplateView):
     def get(self, request):
         if not RegisteredAdmin.IsLoggedIn(request):
             return redirect(self.login_page)
-        print(self.table_names)
         args = {
             "table_names": self.table_names
         }
@@ -43,7 +42,6 @@ class QueryTable(TemplateView):
             return redirect('query')
 
         tableData = serializers.serialize("python", model.objects.all().order_by(sortBy))
-        print(tableData)
 
         args = {
             "table_names": self.table_names,

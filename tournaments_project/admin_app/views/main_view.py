@@ -1,7 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
 from django.views.generic import TemplateView
-
 from django.shortcuts import render, redirect
 
 from ..models import RegisteredAdmin
@@ -16,11 +13,15 @@ class MainAdmin(TemplateView):
         if not RegisteredAdmin.IsLoggedIn(request):
             return redirect(self.login_page)
 
-        users = list(user_models.RegisteredUser.objects.all().values().order_by("id"))
-        admins = list(RegisteredAdmin.objects.all().values().order_by("id"))
+        user_count = user_models.RegisteredUser.objects.all().count()
+        tournaments = user_models.Tournament.objects.all()
+        tournaments_count = [ 0, 0, 0, 0 ]
+
+        for tournament in tournaments:
+            tournaments_count[tournament.state] += 1
 
         args = {
-            "users": users,
-            "admins": admins,
+            "user_count": user_count,
+            "tournaments_count": tournaments_count,
         }
-        return render(request, self.template_name)
+        return render(request, self.template_name, args)

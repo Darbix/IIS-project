@@ -1,0 +1,63 @@
+{% extends 'admin_app/base.html' %}
+
+{% load static %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'admin_app/index.css' %}" />
+{% endblock %}
+
+{% block main-content %}
+<div class="container pb-5">
+    <h1>Tournaments</h1>
+</div>
+
+{% if unconfirmed_tournaments %}
+<div class="container pb-5">
+    <h2>Unconfirmed</h2>
+    <div class="table-responsive">
+        <table class="table-sm table-dark table-bordered">
+            <thead>
+                <tr>
+                    {% for h in header %}
+                        <th>{{ h }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for tournament in unconfirmed_tournaments.values %}
+                <tr>
+                {% for field in tournament.items %}
+                    <td> {{ field.1 }} </td>
+                {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<div class="container">
+    <h2>All</h2>
+    <div class="table-responsive">
+        <table class="table-sm table-dark table-bordered">
+            <thead>
+                <tr>
+                    {% for h in header %}
+                        <th>{{ h }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for tournament in all_tournaments.values %}
+                <tr>
+                {% for field in tournament.items %}
+                    <td> {{ field.1 }} </td>
+                {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
