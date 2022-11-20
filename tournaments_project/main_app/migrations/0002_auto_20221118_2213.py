@@ -157,9 +157,9 @@ class Migration(migrations.Migration):
     ]
 
     operations = [ # Zakomentovat při resetu migrací
-        migrations.RunPython(insert_initial_user),
-        migrations.RunPython(insert_initial_tournament_types),
-        migrations.RunPython(insert_initial_tournament),
-        migrations.RunPython(insert_initial_tournament_data),
-        migrations.RunPython(insert_initial_tournament_team)  # Nutné rozdělit na 2 fce - query se provedou až po skončení fce
+        # migrations.RunPython(insert_initial_user),
+        # migrations.RunPython(insert_initial_tournament_types),
+        # migrations.RunPython(insert_initial_tournament),
+        # migrations.RunPython(insert_initial_tournament_data),
+        # migrations.RunPython(insert_initial_tournament_team)  # Nutné rozdělit na 2 fce - query se provedou až po skončení fce
     ]
