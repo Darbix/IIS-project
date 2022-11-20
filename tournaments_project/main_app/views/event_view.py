@@ -28,18 +28,19 @@ class Event(TemplateView):
         except:
             teams = None
 
-        team = None         # Current user's team joined in the tournament
-        owner_teams = None  # All current user's teams
+        try:
+            # All current user's teams
+            owner_teams = Team.objects.filter(owner=request.session.get("user")["id"])
+        except:
+            owner_teams = None
+
+        team = None # Current user's team joined in the tournament
+
         if(teams):
             try:
                 team = teams.get(owner=request.session.get("user")["id"])
             except:
                 team = None
-
-            try:
-                owner_teams = Team.objects.filter(owner=request.session.get("user")["id"])
-            except:
-                owner_teams = None
             
             if(team):
                 teams = teams.filter(~Q(id=team.id))

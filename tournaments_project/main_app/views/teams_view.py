@@ -3,7 +3,10 @@ from django.shortcuts import render, redirect
 from django.conf import settings
 from itertools import chain
 from django.db.models import Q
+from django.contrib import messages
 from ..models import RegisteredUser, Team, UserTeam, Tournament
+
+USER_TEAMS = "user_teams"
 
 class Teams(TemplateView):
     template_name = 'main_app/user_teams.html'
@@ -12,16 +15,16 @@ class Teams(TemplateView):
         # TODO old teams
 
         try:
-            # All the teams
+            # All the teams a user owns
             created_teams = Team.objects.filter(owner=request.session.get("user")["id"])
+
         except:
             created_teams = None
         
         try:
-            # All the teams (ids) the user created
+            # All the teams (ids) containing a user
             team_ids = list(UserTeam.objects.filter(user=request.session.get("user")["id"]).values_list("team", flat=True))
 
-            # TODO not tested
             # Get all teams a user is present in except those where the user is an owner 
             teams_with_user = Team.objects.filter(id__in=team_ids).filter(~Q(owner=request.session.get("user")["id"]))
         except:
@@ -75,3 +78,142 @@ class Teams(TemplateView):
                 result_teams = None
 
         return result_teams
+
+class AddTeammate(TemplateView):
+    user_teams = USER_TEAMS
+    
+    def post(self, request):
+        try:
+            # Get a player to be added
+            player = RegisteredUser.objects.get(email=request.POST["email"])
+        except:
+            messages.info(request, "A user with this email does not exist")
+            player = None
+        
+        try:
+            # Get a user's team (has to be an owner)
+            team = Team.objects.get(id=int(request.POST["team_id"]))
+            if(team.owner.id != request.session.get("user")["id"]):
+                messages.info(request, "You are not authorized to add players to this team")
+                team = None
+        except:
+            messages.info(request, "A team does not exist")
+            team = None
+
+        # Create a UserTeam object to join a player to the team
+        userteam = None
+        if(team and player):
+            try:
+                userteam = UserTeam(user=player, team=team)
+            except:
+                userteam = None
+        
+        if(userteam):
+            userteam.save()
+            messages.info(request, "The user was added to your team")
+
+        return redirect(self.user_teams)
+
+class RemoveTeammate(TemplateView):
+    user_teams = USER_TEAMS
+    
+    def post(self, request):
+        try:
+            # Get a player to be added
+            player = RegisteredUser.objects.get(id=int(request.POST["player_id"]))
+        except:
+            messages.info(request, "A user does not exist")
+            player = None
+        
+        try:
+            # Get a user's team (has to be an owner)
+            team = Team.objects.get(id=int(request.POST["team_id"]))
+
+            if(team.owner.id != request.session.get("user")["id"] and int(request.POST["player_id"]) != request.session.get("user")["id"]):
+                print(team, ".")
+                messages.info(request, "You are not authorized to remove this player from the team")
+                team = None
+        except:
+            messages.info(request, "The team does not exist")
+            team = None
+
+        # Create a UserTeam object to join a player to the team
+        userteam = None
+        if(player and team):
+            try:
+                userteam = UserTeam.objects.get(user=player.id, team=team.id)
+            except:
+                userteam = None
+        else:
+            messages.info(request, "The user is not in this team")
+        
+        if(userteam):
+            userteam.delete()
+            messages.info(request, "The user was removed from the team")
+
+        return redirect(self.user_teams)
+
+class CreateTeam(TemplateView):
+    user_teams = USER_TEAMS
+    
+    def post(self, request):
+        # Prepare a blank new team
+        try:
+            default_name = request.session.get("user")["first_name"] + "'s Team"
+            team_owner = RegisteredUser.objects.get(id=request.session.get("user")["id"])
+
+            new_team = Team(name=default_name, owner=team_owner, tournament=None)
+        except:
+            new_team = None
+            messages.info(request, "New team creation failed")
+
+        # The team must have at least one player (an owner)
+        if(new_team):
+            try:
+                # The team must be in database to be able to connect a UserTeam object
+                new_team.save()
+
+                player_owner = RegisteredUser.objects.get(id=request.session.get("user")["id"])
+            except:
+                player_owner = None
+
+            # Create a UserTeam object to join a player to the team
+            userteam = None
+            if(player_owner):
+                try:
+                    userteam = UserTeam(user=player_owner, team=new_team)
+                except:
+                    userteam = None
+            
+            if(userteam):
+                userteam.save()
+                messages.info(request, "New team was created")
+            else:
+                new_team.delete()
+                messages.info(request, "New team creation failed")
+
+        return redirect(self.user_teams)
+
+class DeleteTeam(TemplateView):
+    user_teams = USER_TEAMS
+    
+    def post(self, request):
+        try:
+            team = Team.objects.get(id=int(request.POST["team_id"]))
+        except:
+            team = None
+            messages.info(request, "The selected team does not exist")
+        
+        if(team):
+            team.delete()
+            messages.info(request, "The team was deleted")
+
+        return redirect(self.user_teams)
+
+class UnjoinEvent(TemplateView):
+    user_teams = USER_TEAMS
+    
+    def post(self, request):
+        print(request.POST)
+
+        return redirect(self.user_teams)
