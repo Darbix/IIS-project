@@ -168,8 +168,39 @@
 
 .btn-add-teammate{
     color: var(--color-green);
+    background: transparent;
+    width: 40px;
 }
 
 .color-user{
     color: var(--color-green);
+}
+
+.opacity-low{
+    opacity: 0.7 !important;
+}
+
+.btn-add-team{
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    background: var(--color2);
+    color: var(--color-bg);
+    border-radius: 35px;
+    border: none;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    font-size: 32px;
+}
+
+.btn-add-team:hover{
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.btn-delete-team{
+    color: var(--color-light);
+    background: transparent;
+    margin: 0;
 }
