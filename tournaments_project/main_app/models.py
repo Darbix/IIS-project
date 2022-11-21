@@ -46,18 +46,16 @@ class Team(models.Model):
     name = models.CharField(max_length=64)
     owner = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, null=True)
+    confirmed = models.PositiveSmallIntegerField(
+        choices=(
+            (0, 'Unconfirmed'),
+            (1, 'Confirmed')
+        ), default=0
+    )
     avatar = models.ImageField(upload_to='avatars/', default='avatars/default.png')
 
 # Ukládání týmů. Uživatel může být ve více týmech zároveň a týmy mají několik uživatelů
 class UserTeam(models.Model):
-    user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    class Meta:
-        unique_together = ('user', 'team')
-
-# Požadavek zaslaný správcem týmu uživateli o přidání do týmu
-# - ať správce týmu nemůže přidávat jakékoliv uživatele
-class UserTeamRequest(models.Model):
     user = models.ForeignKey(RegisteredUser, on_delete=models.CASCADE)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     class Meta:
