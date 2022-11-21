@@ -13,7 +13,7 @@
 
 <div class="container">
     <div class="card-group">
-        <div class="card bg-dark" style="max-width:20rem">
+        <div class="card bg-dark">
             <div class="card-header font-weight-bold">
                 Tournaments
             </div>
@@ -27,7 +27,7 @@
                             Finished<br/>
                         </p>
                     </div>
-                    <div class="col-sm-6">
+                    <div class="col-sm-5">
                         <p class="card-text">
                             <span class={% if tournaments_count.0 > 0 %}"text-warning"{% else %}"text-success"{% endif %}>{{ tournaments_count.0 }}</span><br/>
                             <span class="text-success">{{ tournaments_count.1 }}</span><br/>
@@ -39,20 +39,40 @@
             </div>
         </div>
 
-        <div class="card bg-dark" style="max-width:20rem">
+        <div class="card bg-dark">
             <div class="card-header font-weight-bold">
                 Users
             </div>
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <p class="card-text font-weight-normal">
                             Registered<br/>
                         </p>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-5">
                         <p class="card-text">
                             <span class="text-success">{{ user_count }}</span><br/>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-dark">
+            <div class="card-header font-weight-bold">
+                Tournament types
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-5">
+                        <p class="card-text font-weight-normal">
+                            Count<br/>
+                        </p>
+                    </div>
+                    <div class="col-md-5">
+                        <p class="card-text">
+                            <span class="text-success">{{ tournament_types }}</span><br/>
                         </p>
                     </div>
                 </div>

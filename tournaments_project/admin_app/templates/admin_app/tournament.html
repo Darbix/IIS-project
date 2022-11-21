@@ -1,0 +1,209 @@
+{% extends 'admin_app/base.html' %}
+
+{% load static %}
+{#% load admin_tags %#}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'admin_app/index.css' %}" />
+{% endblock %}
+
+{% block main-content %}
+<div class="container pb-5">
+    <h1>Tournament info edit</h1>
+</div>
+
+<div class="container pb-5">
+    <form action="" method="post" id="tournament_form">
+        {% csrf_token %}
+        <div class="row pb-3">
+            <div class="col-md-1">
+                <label for="id">Id</label>
+                <input type="text" name="id" class="form-control" readonly value="{{ tournament.id }}">
+            </div>
+            <div class="col-md-2">
+                <label for="state">State</label>
+                <input type="text" name="state" class="form-control" readonly value="{{ tournament.get_state_display }}">
+            </div>
+        </div>
+
+        <div class="row pb-3">
+            <div class="col-md-3">
+                <label for="name">Name</label>
+                <input type="text" name="name" class="form-control" value="{{ tournament.name }}">
+            </div>
+            <div class="col-md-3">
+                <label for="date">Date</label>
+                <input type="date" name="date" class="form-control" value="{{ tournament.date|date:"Y-m-d" }}">
+            </div>
+            <div class="col-md-3">
+                <label for="prize">Prize</label>
+                <input type="text" name="prize" class="form-control" value="{{ tournament.prize }}">
+            </div>
+            <div class="col-md-3">
+                <label for="type">Type</label>
+                <select class="form-select">
+                    {% for type in tournament_types %}
+                    <option {% if type.type == tournament.type.type %}selected{% endif %} name="type" value="{{ type.id }}">{{ type.type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="row pb-3">
+            <div class="col-md-2">
+                <label for="capacity">Capacity</label>
+                <input type="text" name="capacity" class="form-control" value="{{ tournament.capacity }}">
+            </div>
+            <div class="col-md-2">
+                <label for="minimum_team_size">Minimum team size</label>
+                <input type="text" name="minimum_team_size" class="form-control" value="{{ tournament.minimum_team_size }}">
+            </div>
+            <div class="col-md-2">
+                <label for="maximum_team_size">Maximum team size</label>
+                <input type="text" name="maximum_team_size" class="form-control" value="{{ tournament.maximum_team_size }}">
+            </div>
+        </div>
+
+        <div class="row pb-3">
+            <div class="col w-100">
+                <label for="description">Description</label>
+                <textarea class="form-control" name="description" rows="3">{{ tournament.description }}</textarea>
+            </div>
+        </div>
+
+        {% if tournament.state == 0 %}
+        <button type="submit" name="confirm" class="btn btn-labeled btn-info">
+            Confirm
+        </button>
+        {% endif %}
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalUpdate">
+            Update
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">
+            Delete
+        </button>
+    </form>
+</div>
+
+<div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="modalUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalUpdateLabel">Update tournament data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body bg-dark text-white">
+            Are you sure?
+        </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" name="update" form="tournament_form" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalDeleteLabel">Delete tournament</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body bg-dark text-white">
+            Are you sure?
+        </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" name="delete" form="tournament_form" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="accordion" id="moderatorAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading_1">
+                <button class="accordion-button collapsed bg-dark text-white " type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapse_1" aria-expanded="false" aria-controls="collapse_1">
+                Tournament moderator
+                </button>
+            </h2>
+            <div id="collapse_1" class="accordion-collapse collapse" aria-labelledby="heading_1" data-bs-parent="#moderatorAccordion">
+                <div class="accordion-body bg-dark">
+                    {% if moderator %}
+                    <table class="table text-white">
+                        <tr>
+                            <th>Id</th>
+                            <td>{{ moderator.id }}</td>
+                        </tr>
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ moderator.first_name }} {{ moderator.last_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>{{ moderator.email }}</td>
+                        </tr>
+                    </table>
+                    {% else %}
+                    <h2>No moderator!</h2>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="accordion" id="teamsAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading_2">
+                <button class="accordion-button collapsed bg-dark text-white " type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapse_2" aria-expanded="false" aria-controls="collapse_2">
+                Teams
+                </button>
+            </h2>
+            <div id="collapse_2" class="accordion-collapse collapse" aria-labelledby="heading_2" data-bs-parent="#teamsAccordion">
+                <div class="accordion-body bg-dark">
+                    {% if teams_with_users %}
+                    {% for team, users in teams_with_users.items %}
+                    <div class="accordion" id="singleTeamAccordion{{ team.id }}">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading{{ team.id }}">
+                                <button class="accordion-button collapsed bg-dark text-white " type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#collapse{{ team.id }}" aria-expanded="false" aria-controls="collapse{{ team.id }}">
+                                {{ team.name }}
+                                </button>
+                            </h2>
+                            <div id="collapse{{ team.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ team.id }}" data-bs-parent="#singleTeamAccordion{{ team.id }}">
+                                <div class="accordion-body bg-dark">
+                                    <table class="table text-white">
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                        </tr>
+                                        {% for user in users %}
+                                        <tr>
+                                            <td>{{ user.id }}</td>
+                                            <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                            <td>{{ user.email }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    <table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% else %}
+                    <h2>No teams</h2>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

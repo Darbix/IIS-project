@@ -1,0 +1,89 @@
+{% extends 'admin_app/base.html' %}
+
+{% load static %}
+{#% load admin_tags %#}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'admin_app/index.css' %}" />
+{% endblock %}
+
+{% block main-content %}
+<div class="container pb-5">
+    <h1>Admin info edit</h1>
+</div>
+
+<div class="container pb-5">
+    <form action="" method="post" id="admin_form">
+        {% csrf_token %}
+        <div class="row pb-3">
+            <div class="col-md-1">
+                <label for="id">Id</label>
+                <input type="text" name="id" class="form-control" readonly value="{{ admin.id }}">
+            </div>
+        </div>
+
+        <div class="row pb-3">
+            <div class="col-md-3">
+                <label for="first_name">First name</label>
+                <input type="text" name="first_name" class="form-control" value="{{ admin.first_name }}">
+            </div>
+            <div class="col-md-3">
+                <label for="last_name">Last name</label>
+                <input type="text" name="last_name" class="form-control" value="{{ admin.last_name }}">
+            </div>
+            <div class="col-md-3">
+                <label for="email">Email</label>
+                <input type="text" name="email" class="form-control" value="{{ admin.email }}">
+            </div>
+            <div class="col-md-3">
+                <label for="password">Password</label>
+                <input type="password" name="password" class="form-control" value="">
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalUpdate">
+            Update
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete">
+            Delete
+        </button>
+    </form>
+</div>
+
+<div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="modalUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalUpdateLabel">Update admin data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body bg-dark text-white">
+            Are you sure?
+        </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" name="update" form="admin_form" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalDeleteLabel">Delete admin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body bg-dark text-white">
+            Are you sure?
+        </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" name="delete" form="admin_form" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

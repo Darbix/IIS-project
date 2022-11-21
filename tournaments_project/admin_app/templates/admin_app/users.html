@@ -1,0 +1,52 @@
+{% extends 'admin_app/base.html' %}
+
+{% load static %}
+{% load admin_tags %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'admin_app/index.css' %}" />
+{% endblock %}
+
+{% block main-content %}
+<div class="container pb-5">
+    <h1>Users</h1>
+</div>
+
+{% if error %}
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+    <div>
+        Error: {{ error }}
+    </div>
+</div>
+{% endif %}
+
+<div class="container">
+    <div class="table-responsive">
+        <table class="table-sm table-dark table-bordered w-100">
+            <thead>
+                <tr>
+                    {% for h in header %}
+                        <th>{{ h }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users.values %}
+                <tr onclick='window.location="/admin/users/{{ user.id }}"' style="cursor:pointer">
+                {% for field in user.items %}
+                    {% if field.0 == 'password' %}
+                        <td>-</td>
+                    {% elif field.0 == 'birth_date' or field.0 == 'join_date' %}
+                        <td> {{ field.1|date:"Y-m-d" }} </td>
+                    {% else %}
+                        <td> {{ field.1 }} </td>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

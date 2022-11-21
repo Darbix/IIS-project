@@ -1,80 +1,163 @@
 {% extends 'admin_app/base.html' %}
 
 {% load static %}
+{% load admin_tags %}
 
 {% block head-extension %}
     <script type="text/javascript" src="{% static 'admin_app/query.js' %}"></script>
 {% endblock %}
 
 {% block main-content %}
-    <h1>Query</h1>
+<h1>Query</h1>
 
-    <div class="mx-auto mg-3 pb-3 w-50 card bg-dark">
-        <form action="" method="post">
-            {% csrf_token %}
-            <div class="row pb-2 card-body">
-                <div class="col">
-                    <label for="table">Table</label>
-                    <select class="form-control form-control-lg" name="table" id="table_dropdown">
-                        {% for table_name in table_names %}
-                        <option value="{{ table_name.0 }}" onclick="UpdateDropdown('{{ table_name.0 }}')">{{ table_name.0 }}</option>
+{% if error %}
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+    <div>
+        Error: {{ error }}
+    </div>
+</div>
+{% endif %}
+
+<div class="mx-auto mg-3 pb-3 w-50 card bg-dark">
+    <form action="" method="post">
+        {% csrf_token %}
+        <div class="row pb-2 card-body">
+            <div class="col">
+                <label for="table">Table</label>
+                <select class="form-control form-control-lg" name="table" id="table_dropdown">
+                    {% for table in table_names %}
+                    <option value="{{ table }}" onclick="UpdateDropdown('{{ table }}')">{{ table }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col">
+                {% for key, value in table_names.items %}
+                <div id="sort_by_{{ key }}" hidden>
+                    <label for="sort_by">Sort by</label>
+                    <select class="form-control form-control-lg" name="sort_by" id="sort_by_selection_{{ key }}" disabled>
+                        {% for header in value %}
+                        <option value="{{ header }}">{{ header }}</option>
                         {% endfor %}
                     </select>
                 </div>
-
-                <div class="col">
-                    {% for table_name in table_names %}
-                    <div id="sort_by_{{ table_name.0 }}" hidden="true">
-                        <label for="sort_by">Sort by</label>
-                        <select class="form-control form-control-lg" name="sort_by" id="sort_by_selection_{{ table_name.0 }}" disabled="true">
-                            {% for column in table_name.1 %}
-                            <option value="{{ column }}">{{ column }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="row card-body">
-                <div class="col">
-                    <button type="submit" class="btn btn-lg btn-primary">Query</button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    {% if table %}
-    <h2>{{ table }}</h2>
-    {% if table_data %}
-    <div class="table-responsive">
-        <table class="table-sm table-dark">
-            <thead>
-                <tr>
-                    <th>
-                        id
-                    </th>
-                    {% for key in table_data.0.fields %}
-                    <th>
-                        {{ key }}
-                    </th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in table_data %}
-                <tr>
-                    <td> {{ row.pk }} </td>
-                    {% for _, value in row.fields.items %}
-                    <td>{{ value }}</td>
-                    {% endfor %}
-                </tr>
                 {% endfor %}
-            </tbody>
-        </table>
+            </div>
+        </div>
+
+        <div class="row card-body">
+            <div class="col">
+                <button type="submit" class="btn btn-lg btn-primary">Query</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% if table %}
+<h2>{{ table }}</h2>
+<button class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#modalUpdate" onclick="UpdateModalAdd(0)">Add item</button>
+<div class="table-responsive">
+    <table class="table-sm table-dark">
+        <thead>
+            <tr>
+                <th>Edit</th>
+                <th>Delete</th>
+                {% for header in table_names|dict_access:table %}
+                <th name="table_header">{{ header }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% if table_data %}
+            {% for row in table_data %}
+            <tr>
+                <td>
+                    <button type="button" class="btn btn-labeled btn-success" data-bs-toggle="modal" data-bs-target="#modalUpdate" onclick="UpdateModal({{ row.pk }})">
+                        <i class="fa fa-edit"></i>
+                    </button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-labeled btn-danger" data-bs-toggle="modal" data-bs-target="#modalDelete" onclick="UpdateModal({{ row.pk }})">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+                <td name="row_id_{{ row.pk }}">{{ row.pk }}</td>
+                {% for _, value in row.fields.items %}
+                <td name="row_id_{{ row.pk }}">
+                    {% if value|get_type == 'date' %}
+                        {{value|date:'Y-m-d'}}
+                    {% elif value|get_type == 'datetime'  %}
+                        {{value|date:'Y-m-d H-i-s'}}
+                    {% else %}
+                        {{ value }}
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="100%">No data</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="modalUpdate" tabindex="-1" aria-labelledby="modalUpdateLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalUpdateLabel">Edit item data (raw)</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body bg-dark text-white">
+            <form action="" method="post" id="update_form">
+                {% csrf_token %}
+                <table class="table text-white">
+                    {% for header in table_names|dict_access:table %}
+                    <tr>
+                        <th>
+                            <label for="{{ header }}">{{ header }}</label>
+                        </th>
+                        <td>
+                            <input type="text" class="w-100" name="{{ header }}" id="modal_row_id_{{ forloop.counter0 }}"
+                            {% if header == 'id' %} placeholder="automatic" readonly style="color:grey;cursor:default" {% endif %} value="">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <input type="text" name="table" value="{{ table }}" hidden>
+                <input type="text" name="sort_by" value="id" hidden>
+            </form>
+        </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="modal_button_submit" name="update" form="update_form" class="btn btn-primary">Update</button>
+            </div>
+        </div>
     </div>
-    {% else %}
-    <h2>No data</h2>
-    {% endif %}
-    {% endif %}
+</div>
+
+
+<div class="modal fade" id="modalDelete" tabindex="-1" aria-labelledby="modalDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalDeleteLabel">Delete item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body bg-dark text-white">
+            Are you sure?
+        </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="modal_button_submit" name="delete" form="update_form" class="btn btn-primary">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

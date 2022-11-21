@@ -2,7 +2,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import redirect
 
 class LogoutAdmin(TemplateView):
-    login_page = 'admin_app/login.html'
+    login_page = 'login'
 
     def get(self, request):
         admin = request.session.get('admin')

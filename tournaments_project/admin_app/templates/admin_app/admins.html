@@ -1,0 +1,84 @@
+{% extends 'admin_app/base.html' %}
+
+{% load static %}
+{% load admin_tags %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'admin_app/index.css' %}" />
+{% endblock %}
+
+{% block main-content %}
+<div class="container pb-5">
+    <h1>Admins</h1>
+</div>
+
+{% if error %}
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+    <div>
+        Error: {{ error }}
+    </div>
+</div>
+{% endif %}
+
+<div class="container">
+    <button class="btn btn-lg btn-success" data-bs-toggle="modal" data-bs-target="#modalAdd">Add admin</button>
+    <div class="table-responsive pt-3">
+        <table class="table-sm table-dark table-bordered w-100">
+            <thead>
+                <tr>
+                    {% for h in headers %}
+                        <th>{{ h }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for admin in admins.values %}
+                <tr onclick='window.location="/admin/admins/{{ admin.id }}"' style="cursor:pointer">
+                {% for field in admin.items %}
+                    {% if field.0 == 'password' %}
+                        <td>-</td>
+                    {% else %}
+                        <td> {{ field.1 }} </td>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="modalAdd" tabindex="-1" aria-labelledby="modalAddLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="modalAddLabel">Add admin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+        <div class="modal-body bg-dark text-white">
+            <form action="" method="post" id="add_form">
+                {% csrf_token %}
+                <table class="table text-white">
+                    {% for header in headers %}
+                    <tr>
+                        <th>
+                            <label for="{{ header }}">{{ header }}</label>
+                        </th>
+                        <td>
+                            <input type="{% if header == 'password' %}password{% else %}text{% endif %}" class="w-100" name="{{ header }}"
+                            {% if header == 'id' %} placeholder="automatic" readonly style="color:grey;cursor:default" {% endif %} value="">
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </form>
+        </div>
+            <div class="modal-footer bg-dark text-white">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="modal_button_submit" name="add" form="add_form" class="btn btn-primary">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

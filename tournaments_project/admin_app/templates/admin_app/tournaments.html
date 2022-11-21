@@ -1,6 +1,7 @@
 {% extends 'admin_app/base.html' %}
 
 {% load static %}
+{% load admin_tags %}
 
 {% block head-extension %}
     <link rel="stylesheet" href="{% static 'admin_app/index.css' %}" />
@@ -18,16 +19,32 @@
         <table class="table-sm table-dark table-bordered">
             <thead>
                 <tr>
+                    <th>Confirm</th>
                     {% for h in header %}
-                        <th>{{ h }}</th>
+                    <th>{{ h }}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 {% for tournament in unconfirmed_tournaments.values %}
                 <tr>
+                <td class="text-center">
+                    <form action="" method="post" class="form"> 
+                        {% csrf_token %}
+                        <input type="text" name="id" value="{{ tournament.id }}" hidden>
+                        <button type="submit" class="btn btn-lg btn-labeled btn-success">
+                            <i class="fa fa-check"></i>
+                        </button>
+                    </form>
+                </td>
                 {% for field in tournament.items %}
-                    <td> {{ field.1 }} </td>
+                    {% if field.0 == 'type_id' %}
+                        <td onclick='window.location="/admin/tournaments/{{ tournament.id }}"' style="cursor:pointer">{{ unconfirmed_tournaments|tournament_type_at_index:forloop.parentloop.counter0 }}</td>
+                    {% elif field.0 == 'state' %}
+                        <td onclick='window.location="/admin/tournaments/{{ tournament.id }}"' style="cursor:pointer">{{ unconfirmed_tournaments|tournament_state_at_index:forloop.parentloop.counter0 }}</td>
+                    {% else %}
+                        <td onclick='window.location="/admin/tournaments/{{ tournament.id }}"' style="cursor:pointer">{{ field.1 }}</td>
+                    {% endif %}
                 {% endfor %}
                 </tr>
                 {% endfor %}
@@ -38,7 +55,7 @@
 {% endif %}
 
 <div class="container">
-    <h2>All</h2>
+    {% if unconfirmed_tournaments %} <h2>All</h2> {% endif %}
     <div class="table-responsive">
         <table class="table-sm table-dark table-bordered">
             <thead>
@@ -50,9 +67,15 @@
             </thead>
             <tbody>
                 {% for tournament in all_tournaments.values %}
-                <tr>
+                <tr onclick='window.location="/admin/tournaments/{{ tournament.id }}"' style="cursor:pointer">
                 {% for field in tournament.items %}
-                    <td> {{ field.1 }} </td>
+                    {% if field.0 == 'type_id' %}
+                        <td> {{ all_tournaments|tournament_type_at_index:forloop.parentloop.counter0 }} </td>
+                    {% elif field.0 == 'state' %}
+                        <td> {{ all_tournaments|tournament_state_at_index:forloop.parentloop.counter0 }} </td>
+                    {% else %}
+                        <td> {{ field.1 }} </td>
+                    {% endif %}
                 {% endfor %}
                 </tr>
                 {% endfor %}
