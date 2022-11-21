@@ -8,6 +8,25 @@
 
 
 {% block main-content %}
+    {% comment %} Alerts after a page is loaded {% endcomment %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}  
+                <script>
+                    window.onload = function() {
+                        alert("{{ message }}");
+                    };
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" action="create-team/">
+        {% csrf_token %}
+        <button class="btn-add-team">
+            <span class="fa-solid fa-plus"></span>
+        </button>
+    </form>
 
     <div class="form-check form-switch mb-3 ">
         <input class="form-check-input" type="checkbox" id="toggle-view">
@@ -15,32 +34,34 @@
     </div>
 
     {% comment %} Teams where a player is an owner {% endcomment %}
-    <h3 class="mt-4">My own teams</h3>
+    <h3 class="mt-4">My own teams:</h3>
     {% for team in own_teams %}
         <div class="team-box p-3 mb-2">
-            <form method="POST" action="unjoin/">
+            <form method="POST" action="unjoin-event/">
                 {% csrf_token %}
                 <div class="d-flex align-items-center h4 team-header mb-1">
                     <div class="profile-img-div me-3">
                         <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
                     </div>
 
-                    <span class="team-name">{{ team.info.name }}</span>
+                    <span class="team-name me-auto">{{ team.info.name }}</span>
                     
-                    <i class="ms-auto fa-solid fa-right-to-bracket me-2 ps-2 event-icon"></i>
+                    {% if team.event %}
+                        <i class="fa-solid fa-right-to-bracket me-2 ps-2 event-icon"></i>
 
-                    <a href="/events/{{ team.event.id }}" class="event-ref">
-                        <div class="event-ref-text">{{ team.event.name }}</div>
-                    </a>
+                        <a href="/events/{{ team.event.id }}" class="event-ref">
+                            <div class="event-ref-text">{{ team.event.name }}</div>
+                        </a>
+                    
 
-                    {% comment %} Unjoin a team from the tournament {% endcomment %}
-                    <button class="btn-unjoin ms-2 me-3" type="submit">
-                        <span class="fa-solid fa-circle-minus"></span>
-                    </button>
+                        {% comment %} Unjoin a team from the tournament {% endcomment %}
+                        <button class="btn-unjoin ms-2 me-3" type="submit">
+                            <span class="fa-solid fa-circle-minus"></span>
+                        </button>
+                    {% endif %}
                 </div>
-            <form>
+            </form>
 
-            {% comment %} TODO load players in team or one individual as a list {% endcomment %}
             {% for member in team.members %}
                 <div class="player-box mt-1">
                     <div class="d-flex align-items-center">
@@ -65,26 +86,39 @@
                             {% if member.id == team.info.owner.id %}<i class="fa-solid fa-crown text-warning"></i>{% endif %}
                         </div>
                         
-                        <form method="POST" action="remove-teammate">
+                        <form method="POST" action="remove-teammate/" class="d-flex align-items-center">
+                            {% csrf_token %}
                             <input type="hidden" name="player_id" value="{{ member.id }}"/>
                             <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
 
                             <button class="btn-default" type="submit">
                                 <span class="fa-solid fa-circle-xmark"></span>
                             </button>
-                        <form>
+                        </form>
                     </div>
                 </div>
             {% endfor %}
-            <div class="d-flex align-items-center mt-3 me-2">
-                Add a teammate
-                <form method="POST" action="add-teammate">
-                    <input type="hidden" name="player_id" value="{{ member.id }}"/>
-                    <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
+            <div class="d-flex align-items-center mt-3">
+                <form method="POST" action="add-teammate/" class="w-100">
+                    <div class="d-flex align-items-center">
+                        <span>Add a teammate</span>
+                        {% csrf_token %}
+                        <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
+                        <input name="email" type="email" class="form-control w-25 ms-3" placeholder="player@email.com"/>
 
-                    <button class="btn-default btn-add-teammate ms-2" type="submit">
-                        <span class="fa-solid fa-circle-plus"></span>
-                    </button>
+                        <button class="btn-default btn-add-teammate ms-3" type="submit">
+                            <span class="fa-solid fa-user-plus"></span>
+                        </button>
+                    </div>
+                </form>
+                <form class="ms-auto" method="POST" action="delete-team/">
+                    {% csrf_token %}
+                    <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
+                    <div class="d-flex align-items-center">
+                        <button class="btn-default btn-delete-team" type="submit">
+                            <span class="fa-solid fa-trash-can"></span>
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -92,29 +126,27 @@
 
 
     {% comment %} Teams a player is in {% endcomment %}
-    <h3 class="mt-5">Fellow teams</h3>
+    <h3 class="mt-5">Fellow teams:</h3>
     {% for team in fellow_teams %}
         <div class="team-box p-3 mb-2">
-            <form method="POST" action="unjoin/">
-                {% csrf_token %}
-                <div class="d-flex align-items-center h4 team-header mb-1">
-                    <div class="profile-img-div me-3">
-                        <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
-                    </div>
+            <div class="d-flex align-items-center h4 team-header mb-1">
+                <div class="profile-img-div me-3">
+                    <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
+                </div>
 
-                    <span class="team-name">{{ team.info.name }}</span>
-                    
+                <span class="team-name">{{ team.info.name }}</span>
+                
+                {% if team.event %}
                     <i class="ms-auto fa-solid fa-right-to-bracket me-2 ps-2 event-icon"></i>
 
                     <a href="/events/{{ team.event.id }}" class="event-ref wider-size">
                         <div class="event-ref-text">{{ team.event.name }}</div>
                     </a>
-                </div>
-            <form>
+                {% endif %}
+            </div>
 
-            {% comment %} TODO load players in team or one individual as a list {% endcomment %}
             {% for member in team.members %}
-                <div class="player-box mt-1">
+                <div class="player-box mt-1 {% if member.id != request.session.user.id %}opacity-low{% endif %}">
                     <div class="d-flex align-items-center">
                         <div class="profile-img-div small-img">
                             <img src="/media/avatars/default.png" class="rounded-circle full-width small-img profile-img" alt=" "/>
@@ -138,7 +170,8 @@
                         </div>
                         
                         {% if member.id == request.session.user.id %}
-                            <form method="POST" action="remove-teammate">
+                            <form method="POST" action="remove-teammate/" class="d-flex align-items-center">
+                                {% csrf_token %}
                                 <input type="hidden" name="player_id" value="{{ member.id }}"/>
                                 <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
 
