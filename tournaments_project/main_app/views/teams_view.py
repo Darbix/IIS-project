@@ -4,6 +4,8 @@ from django.conf import settings
 from itertools import chain
 from django.db.models import Q
 from django.contrib import messages
+from PIL import Image
+from pathlib import Path
 from ..models import RegisteredUser, Team, UserTeam, Tournament
 
 USER_TEAMS = "user_teams"
@@ -79,6 +81,66 @@ class Teams(TemplateView):
 
         return result_teams
 
+class ChangeName(TemplateView):
+    user_teams = USER_TEAMS
+
+    def post(self, request):
+        try:
+            # Get a user's team (has to be an owner)
+            team = Team.objects.get(id=int(request.POST["team_id"]))
+            if(team.owner.id != request.session.get("user")["id"]):
+                messages.info(request, "You are not authorized to change the team name")
+                team = None
+        except:
+            messages.info(request, "A team does not exist")
+            team = None
+
+        if(team):
+            try:
+                team.name = request.POST["team_name"]
+                team.save()
+                messages.info(request, "The team name was changed")
+            except:
+                messages.info(request, "The team name could not be changed")
+
+        return redirect(self.user_teams)
+
+class TeamImageUpload(TemplateView):
+    user_teams = USER_TEAMS
+
+    def post(self, request):
+        file = request.FILES.get("avatar")
+        team_id = request.POST["team_id"]
+        if not file or not team_id:
+            messages.info(request, "Data receive problem occured or the team does not exist")
+            return redirect(self.user_teams)
+
+        try:
+            # user = RegisteredUser.objects.get(id=session_user["id"])
+            team = Team.objects.get(id=request.POST["team_id"])
+        except RegisteredUser.DoesNotExist as _:
+            messages.info(request, "The team is not valid")
+            return redirect(self.user_teams)
+
+        # Team logo path
+        file_path = "/avatars/t" + str(team.id) + ".png"
+        new_path = settings.MEDIA_ROOT + file_path
+        try:
+            im = Image.open(file)
+            im.resize((256, 256))
+            im.save(Path(new_path), "PNG")
+        except Exception as e:
+            messages.info(request, "Invalid image")
+            return redirect(self.user_teams)
+        team.avatar = file_path
+        team.save()
+        messages.info(request, "The team image was saved")
+
+        response = redirect(self.user_teams)
+        # Cache avatar update
+        response["only-if-cached"] = "must-revalidate"
+        return response
+
 class AddTeammate(TemplateView):
     user_teams = USER_TEAMS
     
@@ -102,11 +164,28 @@ class AddTeammate(TemplateView):
 
         # Create a UserTeam object to join a player to the team
         userteam = None
+        not_in_tournament = True
         if(team and player):
-            try:
-                userteam = UserTeam(user=player, team=team)
-            except:
-                userteam = None
+            # TODO must not be in the tournament if the team is, yet
+            if(team.tournament != None):
+                try:
+                    userteams_team_ids = list(UserTeam.objects.filter(user=player.id).values_list("team", flat=True))
+                    if(userteams_team_ids):
+                        # Find all teams which contain the user in the same tournament
+                        teams_with_user = Team.objects.filter(tournament=team.tournament.id).filter(id__in=userteams_team_ids)
+
+                        # If a user already is in the same tournament, do not add
+                        if(teams_with_user.count() > 0):
+                            not_in_tournament = False
+                            messages.info(request, "The user is already in the same tournament and cannot be added to the team")
+                except:
+                    pass
+
+            if(not_in_tournament):
+                try:
+                    userteam = UserTeam(user=player, team=team)
+                except:
+                    userteam = None
         
         if(userteam):
             userteam.save()
@@ -148,8 +227,11 @@ class RemoveTeammate(TemplateView):
             messages.info(request, "The user is not in this team")
         
         if(userteam):
-            userteam.delete()
-            messages.info(request, "The user was removed from the team")
+            if(team.owner.id == int(request.POST["player_id"])):
+                messages.info(request, "Cannot remove the owner of the team")
+            else:
+                userteam.delete()
+                messages.info(request, "The user was removed from the team")
 
         return redirect(self.user_teams)
 
@@ -214,6 +296,19 @@ class UnjoinEvent(TemplateView):
     user_teams = USER_TEAMS
     
     def post(self, request):
-        print(request.POST)
+        # The team must be in the tournament and the user has to be its owner
+        try:
+            team = Team.objects.get(id=int(request.POST["team_id"]))
+        except:
+            messages.info(request, "The team does not exist")
+
+        if(team):
+            if(team.owner.id == request.session.get("user")["id"]):
+                team.tournament = None
+                team.save()
+
+                messages.info(request, "The team successfully unjoined the tournament")
+            else:
+                messages.info(request, "You are not an owner of this team")
 
         return redirect(self.user_teams)

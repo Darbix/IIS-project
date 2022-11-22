@@ -37,7 +37,7 @@
             <div class="heading">Description</div>
         </div>
         <div class="col-lg-8 info-content-box">
-            <p>{{ event.description }}</p>
+            <p class="m-0">{{ event.description }}</p>
         </div>
     </div>
 
@@ -54,7 +54,7 @@
     <div class="row title-box">
         <div class="col-lg-4 head-title d-flex align-items-center">
             <div class="icon-box"><i class="fa-solid fa-star-half-stroke"></i></div>
-            <div class="heading">Capacity</div>
+            <div class="heading">Free capacity</div>
         </div>
         <div class="col-lg-8 info-content-box">
             {{ event.capacity }}
@@ -81,32 +81,38 @@
         </div>
     </div>
 
-    {% comment %} TODO if joined or not in the tournament {% endcomment %}
-    {% if team != none %}
-        <h3>Joined as</h3>
+    {% comment %} If joined in the tournament {% endcomment %}
+    {% if team %}
+        {% if team.info.confirmed == 1 %}
+            <h3 class="color-ok"><span class="fa-solid fa-check me-2"></span>Joined as</h3>
+        {% else %}
+            <h3 class="text-warning"><span class="fa-solid fa-spinner me-2"></span>Pending confirmation</h3>
+        {% endif %}
+
         <div id="team-box" class="p-3">
-            <form method="POST" action="unjoin/">
-                {% csrf_token %}
-                <div class="d-flex align-items-center h4 team-header mb-1">
-                    <div class="profile-img-div me-3">
-                        <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
-                    </div>
-                    {% if event.minimum_team_size == 1%}Team&nbsp;{% endif %}<span class="team-name">{{ team.info.name }}</span>
-
-                    {% comment %} Unjoin the player or a team from the tournament {% endcomment %}
-                    <button class="ms-auto me-3" id="btn-unjoin" type="submit">
-                        <span class="fa-solid fa-circle-minus"></span>
-                    </button>
+            <div class="d-flex align-items-center h4 team-header mb-1">
+                <div class="profile-img-div me-3">
+                    <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
                 </div>
-            <form>
+                {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name">{{ team.info.name }}</span>
 
-            {% comment %} TODO load players in team or one individual as a list {% endcomment %}
+                {% if team.info.owner.id == request.session.user.id %}
+                    <form method="POST" action="unjoin/" class="ms-auto me-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="team_id" value={{ team.info.id }}>
+                        {% comment %} Unjoin the player or a team from the tournament {% endcomment %}
+                        <button class="btn-circle-right" type="submit">
+                            <span class="fa-solid fa-circle-minus"></span>
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
             {% for member in team.members %}
                 <div class="player-box mt-1">
                     <div class="d-flex align-items-center">
                         <div class="profile-img-div small-img">
-                            <img src="/media/avatars/default.png" class="rounded-circle full-width small-img profile-img" alt=" "/>
-                            {% comment %} {{ request.session.user.avatar_url }} {% endcomment %}
+                            <img src="/media/{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                         </div>
                         
                         <div class="row ms-3 w-100">
@@ -130,44 +136,92 @@
             {% endfor %}
         </div>
 
-        {% if team != none %}
-            <h3 class="mt-5">Participants</h3>
-
-            {% for t in teams %}
-                <div class="d-flex align-items-center h4 all-teams team-header">
-                    <div class="profile-img-div me-3">
-                        <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
-                    </div>
-                    {% if event.minimum_team_size == 1%}Team&nbsp;{% endif %}<span class="team-name">{{ t.name }}</span>
-                </div>
-            {% endfor %}
-        {% endif %}
-
     {% elif request.session.user %}
-    <form method="POST" action="join/">
-        {% csrf_token %}
-        <div class="d-flex align-items-center justify-content-center">
-            <div class="me-4">
-                <select class="form-select form-select-lg pe-5" name="player_team">
-                    <optgroup label="Individual">
-                        {% comment %} Then select a player from session and create a team for 1 player {% endcomment %}
-                        <option selected value="player">Me</option>
-                    </optgroup>
-                    {% if owner_teams %}
-                        <optgroup label="Team">
-                            {% for t in owner_teams %}
-                                <option value="{{ t.id }}">{{ t.name }}</option>
-                            {% endfor %}
-                        </optgroup>
-                    {% endif %}
-                </select>
-            </div>
+        <div class="container-fluid">
+            <div class="row">
+                <form method="POST" action="join/" class="col-md-7 d-flex align-items-center pt-2">
+                    {% csrf_token %}
 
-            <button class="rounded-circle" id="btn-join" type="submit">
-                <i class="fa-solid fa-add rounded-circle"></i>
-            </button>
-        </form>
+                    <h3 class="ms-md-auto">Register</h3>
+                    <select class="form-select form-select-lg pe-5 select-teams ms-3 me-3" name="player_team">
+                        <optgroup label="Individual">
+                            {% comment %} Then select a player from session and create a team for 1 player {% endcomment %}
+                            <option selected value="player">Me</option>
+                        </optgroup>
+                        {% if owner_teams %}
+                            <optgroup label="Team">
+                                {% for t in owner_teams %}
+                                    <option value="{{ t.id }}">{{ t.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endif %}
+                    </select>
+                
+                    <button id="btn-join" type="submit">
+                        <i class="fa-solid fa-check"></i>
+                    </button>
+                </form>
+
+                <div class="col-md-5 d-flex align-items-center pt-2">
+                    <h3 class="mb-0">or&nbsp;<a href="{% url "user_teams" %}" class="create-team-ref ms-2">create a team</a></h3>
+                </div>
+            </div>
+        </div>
     {% endif %}
 
-{% comment %} {{ event.info.id }} {% endcomment %}
+    {% if unconfirmed_teams %}
+        <h3 class="text-warning mt-4"><span class="fa-solid fa-spinner me-2"></span>Pending confirmations</h3>
+        {% for t in unconfirmed_teams %}
+            <div class="d-flex align-items-center h4 all-teams team-header">
+                <div class="profile-img-div me-3">
+                    <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
+                </div>
+                {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name mx-2">{{ t.info.name }}</span>
+                
+                <label class="ms-auto">
+                    <select class="users-readonly me-3">
+                        <option disabled selected>Players</option>
+                        {% for member in t.members %}
+                            <option disabled>{{ member.first_name }}&nbsp;{{ member.last_name }}&emsp;{{ member.email }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
+
+                <form method="POST" action="confirm/" class="me-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="team_id" value={{ t.info.id }}>
+                    <button class="btn-circle-right text-warning" type="submit">
+                        <span class="fa-solid fa-circle-check"></span>
+                    </button>
+                </form>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if teams %}
+        <h3 class="mt-5">Contestants</h3>
+        {% for t in teams %}
+            <div class="d-flex align-items-center h4 all-teams team-header">
+                <div class="profile-img-div me-3">
+                    <img src="/media/{{ t.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
+                </div>
+                {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name">{{ t.name }}</span>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+
+    {% comment %} Alerts after a page is loaded {% endcomment %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}  
+                <script>
+                    window.onload = function() {
+                        alert("{{ message }}");
+                    };
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}

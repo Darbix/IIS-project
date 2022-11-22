@@ -16,9 +16,13 @@ urlpatterns = [
     path('user-teams/create-team/', teams_view.CreateTeam.as_view(), name='create_team'),
     path('user-teams/delete-team/', teams_view.DeleteTeam.as_view(), name='delete_team'),
     path('user-teams/unjoin-event/', teams_view.UnjoinEvent.as_view(), name='unjoin_event'),
+    path('user-teams/change-name/', teams_view.ChangeName.as_view(), name='change_name'),
+    path('user-teams/upload-team-img/', teams_view.TeamImageUpload.as_view(), name='team_image'),
 
     path('events/', events_view.Events.as_view(), name='events'),
     path('events/<int:event_id>/', event_view.Event.as_view(), name='event'),
     path('events/<int:event_id>/join/', event_view.Event.as_view(), name='join_tournament'),
     path('events/<int:event_id>/unjoin/', event_view.EventUnjoin.as_view(), name='unjoin_tournament'),
+    path('events/<int:event_id>/confirm/', event_view.ConfirmTeam.as_view(), name='confirm_team'),
+
 ]
