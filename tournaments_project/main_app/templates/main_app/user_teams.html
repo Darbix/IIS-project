@@ -8,19 +8,6 @@
 
 
 {% block main-content %}
-    {% comment %} Alerts after a page is loaded {% endcomment %}
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.tags %}  
-                <script>
-                    window.onload = function() {
-                        alert("{{ message }}");
-                    };
-                </script>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-
     <form method="POST" action="create-team/">
         {% csrf_token %}
         <button class="btn-add-team">
@@ -37,42 +24,55 @@
     <h3 class="mt-4">My own teams:</h3>
     {% for team in own_teams %}
         <div class="team-box p-3 mb-2">
-            <form method="POST" action="unjoin-event/">
-                {% csrf_token %}
-                <div class="d-flex align-items-center h4 team-header mb-1">
-                    <div class="profile-img-div me-3">
-                        <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
-                    </div>
 
-                    <span class="team-name me-auto">{{ team.info.name }}</span>
-                    
-                    {% if team.event %}
-                        <i class="fa-solid fa-right-to-bracket me-2 ps-2 event-icon"></i>
+            <div class="d-flex align-items-center h4 team-header mb-1">
+                <div class="profile-img-div me-3">
+                    <img src="/media/{{ team.info.avatar }}" class="rounded-circle full-width profile-img" id="team_image_{{ team.info.id }}" alt=" "/>
+                </div>
 
-                        <a href="/events/{{ team.event.id }}" class="event-ref">
-                            <div class="event-ref-text">{{ team.event.name }}</div>
-                        </a>
-                    
+                <form method="POST" action="change-name/" class="w-100" onsubmit="confirm('Do you realy want to change the team name?')">
+                    {% csrf_token %}
+                    <input class="team-name me-auto" name="team_name" value="{{ team.info.name }}" spellcheck="false" 
+                        id="team_name_{{ team.info.id }}" disabled style="opacity: 0.8;">
+                    <input name="team_id" value="{{ team.info.id }}" hidden>
+                    <input type="submit" hidden>
+                </form>
 
+                {% if team.event %}
+                    <i class="fa-solid {% if team.info.confirmed == 1 %}fa-check{% else %}fa-spinner text-warning{% endif %} me-2 ps-2 event-icon"></i>
+
+                    <a href="/events/{{ team.event.id }}" class="event-ref {% if team.info.confirmed != 1 %}bg-warning{% endif %}">
+                        <div class="event-ref-text">{{ team.event.name }}</div>
+                    </a>
+                    <form method="POST" action="unjoin-event/">
+                        {% csrf_token %}
+                        <input type="hidden" name="event_id" value="{{ team.event.id }}">
+                        <input type="hidden" name="team_id" value="{{ team.info.id }}">
+        
                         {% comment %} Unjoin a team from the tournament {% endcomment %}
                         <button class="btn-unjoin ms-2 me-3" type="submit">
                             <span class="fa-solid fa-circle-minus"></span>
                         </button>
-                    {% endif %}
-                </div>
-            </form>
+                    </form>
+
+                {% else %}
+                    Events:
+                    <a href="{% url "events" %}" class="h2 mb-0 mx-3 text-secondary d-flex align-items-center">
+                        <span class="fa-solid fa-gamepad"></span>
+                    </a>
+                {% endif %}
+            </div>
 
             {% for member in team.members %}
                 <div class="player-box mt-1">
                     <div class="d-flex align-items-center">
                         <div class="profile-img-div small-img">
-                            {% comment %} TODO /media/ should probably not be here {% endcomment %}
                             <img src="/media/{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                         </div>
                         
                         <div class="row ms-4 w-100">
                             <div class="col-lg-6 overflow-hidden">
-                                <div class="name-div fw-bold {% if member.id == request.session.user.id %}color-user{% endif %}">
+                                <div class="name-div fw-bold {% if member.id == request.session.user.id %}color-ok{% endif %}">
                                     {{ member.first_name }}&nbsp;{{ member.last_name }}
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                     </div>
                 </div>
             {% endfor %}
-            <div class="d-flex align-items-center mt-3">
+            <div class="d-flex align-items-center mt-3 team-bottom-edit">
                 <form method="POST" action="add-teammate/" class="w-100">
                     <div class="d-flex align-items-center">
                         <span>Add a teammate</span>
@@ -111,15 +111,48 @@
                         </button>
                     </div>
                 </form>
-                <form class="ms-auto" method="POST" action="delete-team/">
-                    {% csrf_token %}
-                    <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
-                    <div class="d-flex align-items-center">
-                        <button class="btn-default btn-delete-team" type="submit">
+                
+                <div class="d-flex align-items-center">
+                    <button class="btn-default btn-bottom me-3" onclick="enable_name_edit();">
+                        <span class="fa-solid fa-pen"></span>
+                    </button>
+                    <script>
+                        function enable_name_edit(){
+                            el = document.getElementById('team_name_{{ team.info.id }}'); 
+                            el.disabled = !el.disabled;
+                            el.style.opacity = el.disabled? 0.8: 1;
+                        }
+                    </script>
+
+                    <form method="POST" action="upload-team-img/" class="d-flex align-items-center me-3" enctype="multipart/form-data" id="form-img">
+                        {% csrf_token %}
+                        <input type="hidden" name="team_id" value="{{ team.info.id }}">
+                        <label for="upload-file" class="h5 fa fa-file-import btn-default btn-bottom"></label>
+                        <input id="upload-file" class="form-control" type="file" name="avatar" style="display: none;" 
+                            accept="image/png, image/jpeg" onchange="load_img(event, 'team_image_{{ team.info.id }}', 'form-img')">
+
+                            <script>
+                                /**
+                                 * Load the uploaded image directly to a profile view
+                                 * @param event Event
+                                 * @param img_id Image id
+                                 */
+                                function load_img(event, img_id, form_id){
+                                    var image = document.getElementById(img_id);
+                                    image.src = URL.createObjectURL(event.target.files[0]);
+                                    document.getElementById(form_id).submit();
+                                };
+                            </script>
+                    </form>
+
+                    <form method="POST" action="delete-team/" class="d-flex align-items-center">
+                        {% csrf_token %}
+                        <input type="hidden" name="team_id" value="{{ team.info.id }}"/>
+                        <button class="btn-default btn-bottom" type="submit">
                             <span class="fa-solid fa-trash-can"></span>
                         </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     {% endfor %}
@@ -131,15 +164,15 @@
         <div class="team-box p-3 mb-2">
             <div class="d-flex align-items-center h4 team-header mb-1">
                 <div class="profile-img-div me-3">
-                    <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
+                    <img src="/media/{{ team.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
                 </div>
 
                 <span class="team-name">{{ team.info.name }}</span>
                 
                 {% if team.event %}
-                    <i class="ms-auto fa-solid fa-right-to-bracket me-2 ps-2 event-icon"></i>
+                    <i class="ms-auto fa-solid {% if team.info.confirmed == 1 %}fa-check{% else %}fa-spinner text-warning{% endif %} me-2 ps-2 event-icon"></i>
 
-                    <a href="/events/{{ team.event.id }}" class="event-ref wider-size">
+                    <a href="/events/{{ team.event.id }}" class="event-ref wider-size {% if team.info.confirmed != 1 %}bg-warning{% endif %}">
                         <div class="event-ref-text">{{ team.event.name }}</div>
                     </a>
                 {% endif %}
@@ -149,13 +182,13 @@
                 <div class="player-box mt-1 {% if member.id != request.session.user.id %}opacity-low{% endif %}">
                     <div class="d-flex align-items-center">
                         <div class="profile-img-div small-img">
-                            <img src="/media/avatars/default.png" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                            <img src="/media/{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                             {% comment %} {{ request.session.user.avatar_url }} {% endcomment %}
                         </div>
                         
                         <div class="row ms-4 w-100">
                             <div class="col-lg-6 overflow-hidden">
-                                <div class="name-div fw-bold {% if member.id == request.session.user.id %}color-user{% endif %}">
+                                <div class="name-div fw-bold {% if member.id == request.session.user.id %}color-ok{% endif %}">
                                     {{ member.first_name }}&nbsp;{{ member.last_name }}
                                 </div>
                             </div>
@@ -188,7 +221,21 @@
         </div>
     {% endfor %}
 
-    
+
+    {% comment %} Alerts after a page is loaded {% endcomment %}
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}  
+                <script>
+                    window.onload = function() {
+                        alert("{{ message }}");
+                    };
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
     <script>
         {% comment %} function toggle_old_view() {
             var checkBox = document.getElementById("toggle-view");
