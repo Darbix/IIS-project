@@ -184,12 +184,18 @@ class AddTeammate(TemplateView):
             if(not_in_tournament):
                 try:
                     userteam = UserTeam(user=player, team=team)
+                    # Team must be again unconfirmed, so the manager can check the player count
+                    team.confirmed = 0
                 except:
                     userteam = None
         
         if(userteam):
-            userteam.save()
-            messages.info(request, "The user was added to your team")
+            try:
+                userteam.save()
+                team.save()
+                messages.info(request, "The user was added to your team")
+            except:
+                messages.info(request, "The user could not be added to the team")
 
         return redirect(self.user_teams)
 
@@ -221,6 +227,8 @@ class RemoveTeammate(TemplateView):
         if(player and team):
             try:
                 userteam = UserTeam.objects.get(user=player.id, team=team.id)
+                # Team must change state to unconfirmed
+                team.confirmed = 0
             except:
                 userteam = None
         else:
@@ -230,9 +238,13 @@ class RemoveTeammate(TemplateView):
             if(team.owner.id == int(request.POST["player_id"])):
                 messages.info(request, "Cannot remove the owner of the team")
             else:
-                userteam.delete()
-                messages.info(request, "The user was removed from the team")
-
+                try:
+                    userteam.delete()
+                    team.save()
+                    messages.info(request, "The user was removed from the team")
+                except:
+                    messages.info(request, "The user removal failed")
+                    
         return redirect(self.user_teams)
 
 class CreateTeam(TemplateView):

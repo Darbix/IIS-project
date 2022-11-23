@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'main_app/results.css' %}" />
+{% endblock %}
+
+
+{% block main-content %}
+
+<h1 class="mt-3 mb-1">Tournament schedules and results</h1>
+<div class="event-list container-fluid p-0">
+    {% for event in ongoing_events %}
+        <form action="{% url 'result_event' event.id %}">
+            <a class="tournament-ref" onclick="this.parentElement.submit();">
+
+                <div class="d-flex mb-1 event-row">
+                    <div class="d-flex p-0 me-5 event-datetime">
+                        <div class="fw-bold">{{ event.date | date:"d. m. Y" }}</div>
+                        <div class="ms-3">{{ event.date | date:"H:i" }}</div>
+                    </div>
+                    
+                    <div class="event-name me-auto">{{ event.name }}</div>
+                    <div class="event-state ps-3">
+                        <span class="fa-solid fa-spinner text-warning"></span>
+                        <span class="text-warning">In progress</span>
+                    </div>
+                </div>
+            </a>
+        </form>
+    {% endfor %}
+
+    <div class="mt-3"></div>
+    {% for event in finished_events %}
+        <form action="{% url 'result_event' event.id %}">
+            <a class="tournament-ref" onclick="this.parentElement.submit();">
+
+                <div class="d-flex mb-1 event-row">
+                    <div class="d-flex p-0 me-5 event-datetime">
+                        <div class="fw-bold">{{ event.date | date:"d. m. Y" }}</div>
+                        <div class="ms-3">{{ event.date | date:"H:i" }}</div>
+                    </div>
+                    
+                    <div class="event-name me-auto">{{ event.name }}</div>
+                    <div class="event-state ps-3">
+                        <span class="fa-solid fa-check color-ok"></span>
+                        <span class="color-ok">Finished</span>
+                    </div>
+                </div>
+            </a>
+        </form>
+    {% endfor %}
+<div>
+
+{% endblock %}

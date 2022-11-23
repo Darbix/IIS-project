@@ -49,17 +49,19 @@ h1{
 
 .select-teams{
     max-width: 250px;
+    opacity: 0.93;
 }
 
 #btn-join{
-    background: var(--color2);
-    color: var(--color-bg);
+    background: transparent;
+    color: var(--color2);
     width: 50px;
     height: 50px;
-    font-size: 33px;
+    font-size: 50px;
     border-radius: 25px;
     border: none;
     line-height: 50px;
+    padding: 0;
 }
 
 #btn-join:hover{
@@ -70,7 +72,7 @@ h1{
 .btn-circle-right{
     height: 40px;
     line-height: 40px;
-    width: 40px;
+    /* width: 40px; */
     font-size: 40px;
     background: var(--color-bg);
     color: var(--color2);
@@ -108,7 +110,7 @@ h1{
 }
 
 .users-readonly{
-    max-width: 140px;
+    max-width: 145px;
     border-radius: 5px;
     background: var(--color-bg);
     color: var(--color-light);
@@ -208,4 +210,16 @@ h1{
 
 .color-ok{
     color: var(--color-ok);
+}
+
+.btn-decline{
+    color: var(--color2);
+}
+
+.btn-generate-schedule{
+    color: var(--color1);
+}
+
+.btn-edit-event{
+    color: var(--color2);
 }

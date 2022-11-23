@@ -16,12 +16,6 @@ class Event(TemplateView):
         except:
             # Event does not exist
             return redirect(self.events_page)
-        
-        # Team manager
-        try:
-            moderator = UserTournamentModerator.objects.filter(tournament=event)
-        except:
-            moderator = None
 
         # Contestant teams
         try:
@@ -97,13 +91,13 @@ class Event(TemplateView):
         
         try:
             # Calculate free capacity in the tournament
-            event.capacity = str(event.capacity - teams.filter(confirmed=1).count()) + " / " + str(event.capacity)
+            event.capacity = str(event.capacity - Team.objects.filter(tournament=event, confirmed=1).count()) + " / " + str(event.capacity)
         except:
             pass
 
         args = {
             "event": event,
-            "moderator": moderator,
+            "moderator_ids": moderator_ids,
             "teams": teams,
             "team": team,
             "owner_teams": owner_teams,
@@ -245,3 +239,34 @@ class ConfirmTeam(TemplateView):
             messages.info(request, "The team confirmation failed")
 
         return redirect("event", event_id=kwargs["event_id"])
+
+class DeclineTeam(TemplateView):
+    def post(self, request, *args, **kwargs):
+        try:
+            event = Tournament.objects.get(id=kwargs["event_id"])
+
+            if(event):
+                moderator_ids = list(UserTournamentModerator.objects.filter(tournament=event.id).values_list("id", flat=True))
+
+                if(request.session.get("user") and request.session.get("user")["id"] in moderator_ids):
+                    team = Team.objects.get(id=int(request.POST["team_id"]))
+                    team.tournament = None
+                    team.save()
+
+                    messages.info(request, "The team was successfully declined")
+                else:
+                    messages.info(request, "You are not authorized to decline this team")
+        except:
+            messages.info(request, "The team refusal failed")
+
+        return redirect("event", event_id=kwargs["event_id"])
+
+class GenerateSchedule(TemplateView):
+    def post(self, request, *args, **kwargs):
+
+        # TODO generate N / 2 matches + (N / 2) / 2 + ... with blank results 
+        # Change a state to 'ongoing'
+        # Save data to database, randomize teams, connect TournamentRounds (teans) and KnockoutTournaments (matches as winners)
+        messages.info(request, "TODO, data are implicit")
+
+        return redirect("result_event", event_id=kwargs["event_id"])

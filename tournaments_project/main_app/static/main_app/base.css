@@ -20,6 +20,11 @@
 
 html{
     background: var(--color-bg);
+    height: 100%;
+}
+
+body{
+    height: 100%;
 }
 
 /* ----- Navigation panel ----- */
