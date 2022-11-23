@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'main_app/result_event.css' %}" />
+    <script src="{% static 'main_app/result_event.js' %}"></script>
+{% endblock %}
+
+
+{% block page-content %}
+<div class="container-fluid content">
+
+    <h1 class="mb-3">{{ event.name }}</h1>
+    
+    <h2>Knockout tournament schedule</h2>
+
+    <form method="POST" action="save-results/" class="form-save">
+        {% csrf_token %}
+        
+        <div id="diagram" class="diagram">
+            {% for team in teams %}
+                <div class="cell cell-team d-flex align-items-center justify-content-center">
+                    <span class="cell-team-name fw-bold">{{ team.name }}</span>
+                </div> 
+            {% endfor %}
+
+            {% for m in matches %}
+                <div class="cell cell-match d-flex align-items-center">
+                    {% if m.t1 and m.t2 %}
+                        <div>
+                            <input type="hidden" name="match_id" value={{ m.id }}>
+                            <div id="m{{ m.id }}_t1" class="cell-match-t1">{{ m.t1.name }}</div>
+                            <div class="d-flex cell-match-score">
+                                <input type="number" class="me-2 cell-match-s1" id="m{{ m.id }}_sc1" name="t1_score" value="{{ m.t1_score }}" 
+                                onchange="change_winner_style('m{{ m.id }}_sc1', 'm{{ m.id }}_sc2', 'm{{ m.id }}_t1', 'm{{ m.id }}_t2');">
+                                :
+                                <input type="number" class="ms-2 cell-match-s2" id="m{{ m.id }}_sc2" name="t2_score" value="{{ m.t2_score }}" 
+                                onchange="change_winner_style('m{{ m.id }}_sc2', 'm{{ m.id }}_sc1', 'm{{ m.id }}_t2', 'm{{ m.id }}_t1');">
+                            </div>
+                            <div id="m{{ m.id }}_t2" class="cell-match-t2">{{ m.t2.name }}</div>
+                        </div>
+                    {% endif %}
+                </div> 
+            {% endfor %}
+        </div>
+
+    
+        <button class="btn-save-edit">
+            <span class="fa-solid fa-check"></span>
+        </button>
+    </form>
+</div>
+
+
+{% comment %} Alerts after a page is loaded {% endcomment %}
+{% if messages %}
+{% for message in messages %}
+    {% if message.tags %}  
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endif %}
+{% endfor %}
+{% endif %}
+
+{% endblock %}

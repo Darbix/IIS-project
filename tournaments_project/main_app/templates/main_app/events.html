@@ -41,11 +41,19 @@
                             <div class="col-md-5 p-2 d-flex align-items-center tournament-title">
                                 {{ event.name }}
                             </div>
-                            <div class="col-md-3 p-2 d-flex align-items-center tournament-type">
+                            <div class="col-md-2 p-2 d-flex align-items-center tournament-type">
                                 {{ event.type.type }}
                             </div>
-                            <div class="col-md-4 p-2 d-flex align-items-center tournament-description">
-                                <p class="m-0">{{ event.description | truncatechars:80 }}<p>
+                            <div class="col-md-5 p-2 d-flex align-items-center tournament-description">
+                                <p class="m-0 me-auto">{{ event.description | truncatechars:80 }}</p>
+                                
+                                {% if event.id in moderators_event_ids %}
+                                    <div class="moderator-icon text-warning d-flex justify-content-center">
+                                        <span class="fa-solid fa-users-gear"></span>
+                                    </div>
+                                {% else %}
+                                    <div class="moderator-icon"></div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

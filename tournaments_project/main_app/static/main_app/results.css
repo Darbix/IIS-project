@@ -1,0 +1,47 @@
+.event-row{
+    padding: 6px;
+    border-radius: 5px;
+    background: var(--color-box);
+    font-size: 1.28rem;
+}
+
+.event-datetime{
+    white-space: nowrap;
+}
+
+.event-state{
+    min-width: 170px;
+}
+
+.event-name{
+    width: 100%;
+    overflow-x: scroll;
+    white-space: nowrap;
+    font-family: var(--font1);
+}
+
+.event-name{
+    overflow-x: scroll;
+    -ms-overflow-style: none;  /* Hide scrollbar on IE, Edge */
+    scrollbar-width: none;      /* Hide scrollbar on Firefox */
+}
+
+/* Hide scrollbar on Chrome, Safari and Opera */
+.event-name::-webkit-scrollbar{
+    display: none;
+}
+
+.color-ok{
+    color: var(--color-ok);
+}
+
+.tournament-ref {
+    text-decoration: none;
+    color: white;
+    display: block;
+}
+.tournament-ref .event-row:hover{
+    color: white;
+    background: var(--color-box-header);
+    transition: all 0.15s ease;
+}

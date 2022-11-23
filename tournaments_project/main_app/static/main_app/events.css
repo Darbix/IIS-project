@@ -61,3 +61,8 @@
     /* If the block is under the title, constraint its height */
     max-height: 80px;
 }
+
+.moderator-icon{
+    font-size: 27px;
+    min-width: 45px;
+}
