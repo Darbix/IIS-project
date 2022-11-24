@@ -9,20 +9,55 @@
 
 {% block main-content %}
 
-    <h1 class="mb-4">{{ event.name }}</h1>
+    <h1 class="mb-4 py-2">{{ event.name }}</h1>
 
     {% if request.session.user.id in moderator_ids %}
-        <div class="d-flex">
-            <form method="POST" action="generate-schedule/" class="d-flex align-items-center ms-auto me-4">
+        <div class="d-flex mb-3">
+            <form method="POST" action="change-state/" class="d-flex align-items-center me-4">
                 {% csrf_token %}
-                <button class="btn-circle-right ms-auto" type="submit">
+                <span class="h3 me-3 mb-0
+                    {% if event.state == 0 %}text-danger
+                    {% elif event.state == 1 %}text-secondary
+                    {% elif event.state == 2 %}text-warning
+                    {% elif event.state == 3 %}color-ok
+                    {% endif %}">
+                    {{ event.get_state_display }}
+                </span>
+                {% if event.state != 0 %}
+                    <select name="state" class="form-select select-state" onchange="this.form.submit();">
+                        <option value="1" {% if event.state == 1 %}selected{% endif %}>Confirmed</option>
+                        <option value="2" {% if event.state == 2 %}selected{% endif %}>In progress</option>
+                        <option value="3" {% if event.state == 3 %}selected{% endif %}>Finished</option>
+                    </select>
+                {% endif %}
+            </form>
+            
+            <form method="POST" action="generate-schedule/" class="d-flex align-items-center ms-auto me-4" 
+                    onsubmit="return confirm('Do you realy want to remove an existing schedule and generate a new one?')">
+                {% csrf_token %}
+                <button class="btn-circle-right" type="submit">
                     <span class="fa-solid fa-dice btn-generate-schedule"></span>
                 </button>
             </form>
 
-            {% comment %} {% url 'events_create' %} TODO {% endcomment %}
-            <form method="POST" action="#" class="d-flex align-items-center">
+            <a href="{% url 'result_event' event.id %}" class="d-flex align-items-center me-4">
                 {% csrf_token %}
+                <button class="btn-circle-right" type="submit">
+                    <span class="fa-solid fa-table text-light"></span>
+                </button>
+            </a>
+
+            <form method="POST" action="remove-tournament/" class="d-flex align-items-center me-4"
+                    onsubmit="return confirm('Do you realy want to remove this tournament?');">
+                {% csrf_token %}
+                <button class="btn-circle-right" type="submit">
+                    <span class="fa-solid fa-trash text-light"></span>
+                </button>
+            </form>
+
+            {% comment %} {% url 'events_create' %} TODO {% endcomment %}
+            <form method="GET" action="{% url 'create_tournament' event.id %}" class="d-flex align-items-center">
+                {% comment %} {% csrf_token %} {% endcomment %}
                 <button class="btn-circle-right ms-auto btn-edit-event" type="submit">
                     <span class="fa-solid fa-gear"></span>
                 </button>
@@ -155,7 +190,7 @@
             {% endfor %}
         </div>
 
-    {% elif request.session.user and request.session.user.id not in moderator_ids %}
+    {% elif request.session.user and request.session.user.id not in moderator_ids and event.state != 0 and event.state != 3 %}
         <div class="container-fluid">
             <div class="row">
                 <form method="POST" action="join/" class="col-md-7 d-flex align-items-center pt-2 pe-3">
@@ -199,7 +234,7 @@
                 
                 <label class="ms-auto">
                     <select class="users-readonly me-3">
-                        <option disabled selected>{{ t.members.count }}&nbsp;Player(s)</option>
+                        <option disabled selected>{% if t.members %}{{ t.members.count }}{% else %}0{% endif %}&nbsp;Player(s)</option>
                         {% for member in t.members %}
                             <option disabled>{{ member.first_name }}&nbsp;{{ member.last_name }}&emsp;{{ member.email }}</option>
                         {% endfor %}
@@ -230,11 +265,32 @@
         {% for t in teams %}
             <div class="d-flex align-items-center h4 all-teams team-header">
                 <div class="profile-img-div me-3">
-                    <img src="/media/{{ t.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
+                    <img src="/media/{{ t.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
                 </div>
-                {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name">{{ t.name }}</span>
+                {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name">{{ t.info.name }}</span>
+
+                <label class="ms-auto">
+                    <select class="users-readonly me-3">
+                        <option disabled selected>{% if t.members %}{{ t.members.count }}{% else %}0{% endif %}&nbsp;Player(s)</option>
+                        {% for member in t.members %}
+                            <option disabled>{{ member.first_name }}&nbsp;{{ member.last_name }}&emsp;{{ member.email }}</option>
+                        {% endfor %}
+                    </select>
+                </label>
             </div>
         {% endfor %}
+    {% endif %}
+
+    {% if messages %}
+    {% for message in messages %}
+        {% if message.tags %}  
+            <script>
+                window.onload = function() {
+                    alert("{{ message }}");
+                };
+            </script>
+        {% endif %}
+    {% endfor %}
     {% endif %}
 
 {% endblock %}

@@ -9,16 +9,18 @@
 
 {% block main-content %}
 
-    <h1 class="mb-4">Create a tournament</h1>
+    <h1 class="mb-4">{% if event %}Edit{% else %}Create{% endif %} a tournament</h1>
         <form method="POST" action="save/">
             {% csrf_token %}
+            <input type="hidden" name="event_id" value="{% if event %}{{ event.id }}{% endif %}">
+
             <div class="row title-box">
                 <div class="col-lg-4 head-title d-flex align-items-center">
                     <div class="icon-box"><i class="fa-solid fa-signature"></i></div>
                     <div class="heading">Name</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <input type="text" id="name" name="name" placeholder="Enter a name of your tournament" value="">
+                    <input type="text" id="name" name="name" placeholder="Enter a name of your tournament" value="{% if event %}{{ event.name }}{% endif %}">
                 </div>
             </div>
 
@@ -28,7 +30,7 @@
                     <div class="heading">Date</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <input type="datetime-local" id="date" name="date" value="">
+                    <input type="datetime-local" id="date" name="date" value="{% if event %}{{event.date|date:'Y-m-d'}}T{{event.date|time:'H:i'}}{% endif %}">
                 </div>
             </div>
 
@@ -38,10 +40,10 @@
                     <div class="heading">Type</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <select id="type" name="type" value="">
+                    <select id="type" name="type" value="" class="type-select">
                         <option value="none" selected disabled hidden>Select a type</option>
                         {% for type in types %}
-                            <option value="{{ type.id }}">{{ type.type }}</option>
+                            <option value="{{ type.id }}" {% if event and event.type.id == type.id %}selected{% endif %}>{{ type.type }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -53,7 +55,7 @@
                     <div class="heading">Description</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <textarea id="description" name="description" placeholder="Provide a brief description" value=""></textarea>
+                    <textarea id="description" name="description" placeholder="Provide a brief description">{% if event %}{{ event.description }}{% endif %}</textarea>
                 </div>
             </div>
 
@@ -63,7 +65,7 @@
                     <div class="heading">Prize</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <input type="text" id="prize" name="prize" placeholder="Enter a prize for the winner" value="">
+                    <input type="text" id="prize" name="prize" placeholder="Enter a prize for the winner" value="{% if event %}{{ event.prize }}{% endif %}">
                 </div>
             </div>
 
@@ -73,7 +75,7 @@
                     <div class="heading">Capacity</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <input type="number" id="capacity" name="capacity" min="1" placeholder="0" value="">
+                    <input type="number" id="capacity" name="capacity" min="1" placeholder="0" value="{% if event %}{{ event.capacity }}{% endif %}">
                 </div>
             </div>
 
@@ -83,7 +85,7 @@
                     <div class="heading">Min team members</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <input type="number" id="min" name="min" min="1" placeholder="0" value="">
+                    <input type="number" id="min" name="min" min="1" placeholder="0" value="{% if event %}{{ event.minimum_team_size }}{% endif %}">
                 </div>
             </div>
 
@@ -93,12 +95,12 @@
                     <div class="heading">Max team members</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
-                    <input type="number" id="max" name="max" min="1" placeholder="0" value="">
+                    <input type="number" id="max" name="max" min="1" placeholder="0" value="{% if event %}{{ event.maximum_team_size }}{% endif %}">
                 </div>
             </div>
 
             <div class="d-flex justify-content-center">
-                <button class="button" name="create_button">Create</button>
+                <button class="button" name="create_button">{% if event %}Save{% else %}Create{% endif %}</button>
             </div>
         </form>
 {% endblock %}

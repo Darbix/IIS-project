@@ -82,6 +82,11 @@
 }
 
 .moderator-icon{
-    font-size: 27px;
+    font-size: 29px;
     min-width: 45px;
+    margin-right: 5px;
+}
+
+.unconfirmed-event{
+    opacity: 0.6;
 }

@@ -1,15 +1,16 @@
-#toggle-view:checked{
-    background-color: var(--color1);
-    opacity: 1;
-}
-#toggle-view{
+#show-former{
     border: none;
-    box-shadow: none;
-    opacity: 0.7;
+    outline: none;
+    height: 45px;
+    font-size: 45px;
+    padding: 0;
+    line-height: 45px;
+    background: transparent;
+    color: var(--color1);
 }
 
 .team-box{
-    background: var(--color-box);
+    background: var(--color-box-header);
     border-radius: 5px;
 }
 
@@ -25,8 +26,11 @@
     white-space: nowrap;
     background: transparent;
     border: none;
-    border-bottom: 4px solid rgba(255,255,255,0.1);
     outline: none;
+}
+
+input.team-name{
+    border-bottom: 4px solid rgba(255,255,255,0.1);
 }
 
 .team-header{
@@ -133,7 +137,7 @@
 
 .player-box{
     margin: 0 15px;
-    background: var(--color-box-header);
+    background: var(--color-box);
     border-radius: 70px;
     min-height: 40px;
     overflow: hidden;
@@ -213,4 +217,8 @@
     color: var(--color-light);
     background: transparent;
     margin: 0;
+}
+
+.team-readonly{
+    opacity: 0.7;
 }
