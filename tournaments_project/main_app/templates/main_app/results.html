@@ -9,7 +9,7 @@
 
 {% block main-content %}
 
-<h1 class="mt-3 mb-1">Tournament schedules and results</h1>
+<h1 class="mt-3 mb-2">Tournament schedules and results</h1>
 <div class="event-list container-fluid p-0">
     {% for event in ongoing_events %}
         <form action="{% url 'result_event' event.id %}">

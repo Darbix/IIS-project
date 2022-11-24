@@ -14,16 +14,24 @@ class Events(TemplateView):
     template_events_name = "main_app/events.html"
 
     def get(self, request):
+        tournaments = []
+        moderators_event_ids = []
+
         try:
-            tournaments = Tournament.objects.filter(~Q(state=0))
+            tournaments = Tournament.objects.filter(state__in=[1,2]).order_by("date")
         except:
-            tournaments = None
+            tournaments = []
 
         moderators_event_ids = []
         try:
             # A list of events where the current user is a moderator
             if(request.session.get("user")):
                 moderators_event_ids = list(UserTournamentModerator.objects.filter(user=request.session.get("user")["id"]).values_list("tournament", flat=True))
+
+            # A user is a moderator in some tournaments and has to be able to see them even when they are unconfirmed
+            if(moderators_event_ids):
+                tournaments = tournaments | Tournament.objects.filter(state=0, id__in=moderators_event_ids)
+                tournaments = tournaments.order_by("date")
         except:
             moderators_event_ids = []
 
@@ -35,10 +43,21 @@ class Events(TemplateView):
 
 class EventCreate(TemplateView):
     template_event_create = "main_app/event_create.html"
+    events_page = "events"
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
+        event = None
+        try:
+            # Load an existing event, if it is Edit and not Create
+            if("event_id" in kwargs):
+                event = Tournament.objects.get(id=kwargs["event_id"])
+        except:
+            messages.info(request, "Incorrect event")
+            return redirect(self.events_page)
+
         game_types = list(TournamentType.objects.all())
         args = {
+            "event": event,
             "types": game_types
         }
         return render(request, self.template_event_create, args)
@@ -48,6 +67,24 @@ class SaveEvent(TemplateView):
     events_page = "/events"
 
     def post(self, request):
+        if(not request.session.get("user")):
+            messages.info(request, "You must be logged in to create tournaments")
+            return redirect(self.events_page)
+
+        event = None
+        if("event_id" in request.POST):
+            try:
+                # Existing event will be changed or a new one created
+                event = Tournament.objects.get(id=request.POST["event_id"])
+                moderator_ids = list(UserTournamentModerator.objects.filter(tournament=event.id).values_list("user", flat=True))
+                
+                if(request.session.get("user")["id"] not in moderator_ids):
+                    event = None
+            except:
+                event = None
+            if(not event):
+                messages.info(request, "Event edit failed")
+                return redirect(self.events_page)
 
         try:
             session_user = RegisteredUser.objects.get(id=request.session.get("user")["id"])
@@ -63,18 +100,30 @@ class SaveEvent(TemplateView):
             capacity_t = int(request.POST["capacity"])
             min_t = int(request.POST["min"])
             max_t = int(request.POST["max"])
+            state_t = 0
 
-            tournament = Tournament(name=name_t,
-                                    date=date_t,
-                                    type=type_t,
-                                    state=0,
-                                    description=description_t,
-                                    prize=prize_t,
-                                    capacity=capacity_t,
-                                    minimum_team_size=min_t,
-                                    maximum_team_size=max_t)
-            tournament.save()
-            messages.info(request, "Tournament was successfully created")
+            if(capacity_t % 2 != 0 or capacity_t <= 0):
+                messages.info(request, "The capacity must be an even number > 0")
+            if(min_t > max_t or min_t <= 0 or max_t <= 0):
+                messages.info(request, "Invalid Min or Max value")
+            else:     
+                tournament = Tournament()
+                if(event):  
+                    state_t = event.state
+                    tournament = event     
+                    
+                tournament.name = name_t
+                tournament.date = date_t
+                tournament.type = type_t
+                tournament.state = state_t
+                tournament.description = description_t
+                tournament.prize = prize_t
+                tournament.capacity = capacity_t
+                tournament.minimum_team_size = min_t
+                tournament.maximum_team_size = max_t
+
+                tournament.save()
+                messages.info(request, "Tournament was successfully created")
         except:
             messages.warning(request, "Tournament was not created")
             tournament = None

@@ -1,10 +1,11 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from ..models import Tournament, TournamentType, Team, UserTournamentModerator, RegisteredUser, UserTeam
+from ..models import Tournament, TournamentType, Team, UserTournamentModerator, RegisteredUser, UserTeam, TournamentMatch, TournamentRound, KnockoutMatch
 from datetime import datetime
 from django.db.models import Q
 from itertools import chain
 from django.contrib import messages
+import random
 
 class Event(TemplateView):
     events_page = "events"
@@ -31,11 +32,13 @@ class Event(TemplateView):
 
         try:
             # A list of moderators that can confirm the joining teams
-            moderator_ids = list(UserTournamentModerator.objects.filter(tournament=event.id).values_list("id", flat=True))
+            moderator_ids = list(UserTournamentModerator.objects.filter(tournament=event.id).values_list("user", flat=True))
         except:
             moderator_ids = None
 
-        team = None # Current user's team joined in the tournament
+        team = None             # Current user's team joined in the tournament
+        unconfirmed_teams = []  # Unconfirmed teams for moderators
+        joined_teams = []       # Teams in the tournament in the list-model form dict with members
 
         if(teams):
             try:
@@ -47,7 +50,6 @@ class Event(TemplateView):
             except:
                 team = None
             
-            unconfirmed_teams = []
             try:
                 if(request.session.get("user") and moderator_ids):
                     if(request.session.get("user")["id"] in moderator_ids):
@@ -71,7 +73,16 @@ class Event(TemplateView):
                 if(team and teams):
                     # Other contestant team list should not contain user's team
                     teams = teams.filter(~Q(id=team.id)).order_by("confirmed")
+                
+                    # TODO check it
+                for t in teams:
+                    members_ids = list(UserTeam.objects.filter(team=t.id).values_list("user", flat=True))
+                    members = None
+                    if(members_ids):
+                        members = RegisteredUser.objects.filter(id__in=members_ids)
+                    joined_teams.append({"info": t, "members": members})
 
+                if(team):
                     # Get team member ids
                     members_ids = list(UserTeam.objects.filter(team=team.id).values_list("user", flat=True))
                     # Exclude the owner to place it to the list start
@@ -84,7 +95,7 @@ class Event(TemplateView):
                         members = chain([owner], members)
                     else:
                         members = [owner]
-                    
+
                     team = {"info": team, "members": members}
             except:
                 pass
@@ -98,12 +109,12 @@ class Event(TemplateView):
         args = {
             "event": event,
             "moderator_ids": moderator_ids,
-            "teams": teams,
+            "teams": joined_teams,
             "team": team,
             "owner_teams": owner_teams,
             "unconfirmed_teams": unconfirmed_teams
         }
-            # "moderator_ids": moderator_ids
+
         return render(request, self.template_event_name, args)
 
 
@@ -116,8 +127,8 @@ class Event(TemplateView):
             # Event does not exist
             return redirect(self.events_page)
 
-        # Decide between individual/team join
-        if(request.POST["player_team"] == "player"):
+        # Decide between individual/team join if redirection was not from the result page
+        if("player_team" in request.POST and request.POST["player_team"] == "player"):
             not_in_tournament = True
             try:
                 # Check if the user is not in a team in this tournament
@@ -166,7 +177,7 @@ class Event(TemplateView):
             else:
                 messages.info(request, "You already are in this tournament")
 
-        else:
+        elif("player_team" in request.POST):
             try:
                 team = Team.objects.get(id=int(request.POST["player_team"]))
 
@@ -261,12 +272,101 @@ class DeclineTeam(TemplateView):
 
         return redirect("event", event_id=kwargs["event_id"])
 
+class RemoveTournament(TemplateView):
+    def post(self, request, *args, **kwargs):
+        try:
+            event = Tournament.objects.get(id=kwargs["event_id"])
+        except:
+            messages.info(request, "The event does not exist")
+            return redirect("event", event_id=kwargs["event_id"])
+        
+        # event.delete() TODO uncomment
+
+        messages.info(request, "The tournament was successfully removed")
+        return redirect("events")
+
 class GenerateSchedule(TemplateView):
     def post(self, request, *args, **kwargs):
+        try:
+            event = Tournament.objects.get(id=kwargs["event_id"])
+        except:
+            messages.info(request, "The event does not exist")
+            return redirect("event", event_id=kwargs["event_id"])
 
-        # TODO generate N / 2 matches + (N / 2) / 2 + ... with blank results 
-        # Change a state to 'ongoing'
-        # Save data to database, randomize teams, connect TournamentRounds (teans) and KnockoutTournaments (matches as winners)
-        messages.info(request, "TODO, data are implicit")
+        try:
+            matches = TournamentMatch.objects.filter(tournament=kwargs["event_id"])
+            for match in matches:
+                match.delete()
+            
+            messages.info(request, "Existing matches were successfully deleted")
+        except:
+            pass
+        
+        try:
+            teams = list(Team.objects.filter(tournament=kwargs["event_id"], confirmed=1))
+            random.shuffle(teams)
 
+            if(len(teams) % 2 != 0 and len(teams) != 0):
+                messages.info(request, "A number of teams is not even")
+                return redirect("event", event_id=kwargs["event_id"])
+            
+            # Create len(teams) / 2 matches for all pairs
+            matches = [TournamentMatch(tournament=event, state=1, team_1_score=0, team_2_score=0) for _ in range(int(len(teams) / 2))]
+            pairs = [TournamentRound(match=matches[int(i / 2)], team_1=teams[i], team_2=teams[i+1]) for i in range(0, len(teams), 2)]
+        except:
+            messages.info(request, "Team loading failed")
+            return redirect("event", event_id=kwargs["event_id"])
+        
+        try:
+            n = len(matches)        # A Number of matches in a previous row 
+            m_cnt = len(matches)    # An index skip for matches to get the current ones
+            m_pos = 0               # An index of the first match (winner) from a previous row
+            elims = []              # A list of elimination matches KnockoutMatch
+
+            # While the previous row has more that 1 matches
+            while(n > 1):
+                matches += [TournamentMatch(tournament=event, state=1, team_1_score=0, team_2_score=0) for _ in range(int(n / 2))]
+                elims += [
+                    KnockoutMatch(match=matches[m_cnt + int(i / 2)], 
+                        team_1_match_winner=matches[m_pos + i], 
+                        team_2_match_winner=matches[m_pos + i + 1]) 
+                    for i in range(0, n, 2)
+                ]
+
+                m_pos = m_cnt        # Move the starting point to find winners from matches
+                m_cnt = len(matches) # A number of all matches
+                n = int(n / 2)       # A number of matches in the current row 
+        except:
+            messages.info(request, "Schedule generation unexpectedly failed")
+
+        if(matches and pairs and elims):
+            try:
+                for match in matches:
+                    match.save() 
+                for pair in pairs:
+                    pair.save() 
+                for elim in elims:
+                    elim.save() 
+            except:
+                messages.info(request, "Schedule generation failed")
+
+        messages.info(request, "The tournament schedule was randomly generated")
         return redirect("result_event", event_id=kwargs["event_id"])
+    
+class ChangeState(TemplateView):
+    def post(self, request, *args, **kwargs):
+        try:
+            event = Tournament.objects.get(id=kwargs["event_id"])
+            if(event):
+                # Cannot change to unconfirmed and cannot change to confirmed from unconfirmed
+                if(int(request.POST["state"]) == 0 or (int(request.POST["state"]) == 1 and event.state == 0)):
+                    messages.info(request, "You cannot change the state to this option")
+                else:
+                    event.state = int(request.POST["state"])
+                    event.save()
+
+                    messages.info(request, "The event state was changed")
+        except:
+            messages.info(request, "The event does not exist")
+
+        return redirect("event", event_id=kwargs["event_id"])

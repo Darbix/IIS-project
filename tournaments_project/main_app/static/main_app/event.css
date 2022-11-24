@@ -52,6 +52,12 @@ h1{
     opacity: 0.93;
 }
 
+.select-state{
+    opacity: 0.85;
+    border: none;
+    outline: none !important;
+}
+
 #btn-join{
     background: transparent;
     color: var(--color2);
@@ -110,7 +116,7 @@ h1{
 }
 
 .users-readonly{
-    max-width: 145px;
+    width: 145px;
     border-radius: 5px;
     background: var(--color-bg);
     color: var(--color-light);

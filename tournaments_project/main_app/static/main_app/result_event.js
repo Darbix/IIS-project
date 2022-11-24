@@ -133,8 +133,8 @@ function change_winner_style(iA_id, iB_id, tA_id, tB_id){
     var scoreB = inputB.value;
 
     // Default CSS colors
-    teamA.style.color = inputA.style.background = "";
-    teamB.style.color = inputB.style.background = "";
+    teamA.style.color = inputA.style.background = inputA.style.color = "";
+    teamB.style.color = inputB.style.background = inputB.style.color = "";
 
     // Color the winner's attributes
     if(scoreA > scoreB)

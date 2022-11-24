@@ -19,9 +19,11 @@ urlpatterns = [
     path('user-teams/unjoin-event/', teams_view.UnjoinEvent.as_view(), name='unjoin_event'),
     path('user-teams/change-name/', teams_view.ChangeName.as_view(), name='change_name'),
     path('user-teams/upload-team-img/', teams_view.TeamImageUpload.as_view(), name='team_image'),
+    path('user-teams/former-teams/', teams_view.FormerTeams.as_view(), name='former_teams'),
 
     path('events/', events_view.Events.as_view(), name='events'),
     path('events/create/', events_view.EventCreate.as_view(), name='create_tournament'),
+    path('events/create/<int:event_id>', events_view.EventCreate.as_view(), name='create_tournament'),
     path('events/create/save/', events_view.SaveEvent.as_view(), name='save_new_tournament'),
     path('events/<int:event_id>/', event_view.Event.as_view(), name='event'),
     path('events/<int:event_id>/join/', event_view.Event.as_view(), name='join_tournament'),
@@ -29,8 +31,11 @@ urlpatterns = [
     path('events/<int:event_id>/confirm/', event_view.ConfirmTeam.as_view(), name='confirm_team'),
     path('events/<int:event_id>/decline/', event_view.DeclineTeam.as_view(), name='decline_team'),
     path('events/<int:event_id>/generate-schedule/', event_view.GenerateSchedule.as_view(), name='generate_schedule'),
+    path('events/<int:event_id>/remove-tournament/', event_view.RemoveTournament.as_view(), name='remove_tournament'),
+    path('events/<int:event_id>/change-state/', event_view.ChangeState.as_view(), name='change_state'),
 
     path('results/', results_view.Results.as_view(), name='results'),
     path('results/<int:event_id>/', result_view.ResultEvent.as_view(), name='result_event'),
-    path('results/<int:event_id>/save-results/', result_view.ResultEvent.as_view(), name='save_results'),
+    path('results/<int:event_id>/save-results/', result_view.SaveResults.as_view(), name='save_results'),
+    path('results/<int:event_id>/erase-schedule/', result_view.EraseSchedule.as_view(), name='erase_schedule'),
 ]

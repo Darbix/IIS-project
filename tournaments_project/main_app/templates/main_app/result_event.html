@@ -13,6 +13,32 @@
 
     <h1 class="mb-3">{{ event.name }}</h1>
     
+    <div class="d-flex">
+        <a href="{% url 'event' event.id %}" class="d-flex align-items-center me-4 ms-auto">
+            {% csrf_token %}
+            <button class="btn-circle-right" type="submit">
+                <span class="fa-solid fa-eye text-light"></span>
+            </button>
+        </a>
+
+        {% if request.session.user.id in moderator_ids %}
+            <form method="POST" action="erase-schedule/" class="d-flex align-items-center me-4"
+                    onsubmit="return confirm('Do you realy want to erase this schedule?');">
+                {% csrf_token %}
+                <button class="btn-circle-right" type="submit">
+                    <span class="fa-solid fa-eraser text-light"></span>
+                </button>
+            </form>
+
+            <form method="GET" action="{% url 'event' event.id %}" class="d-flex align-items-center">
+                {% csrf_token %}
+                <button class="btn-circle-right ms-auto btn-edit-event" type="submit">
+                    <span class="fa-solid fa-gear"></span>
+                </button>
+            </form>
+        {% endif %}
+    </div>
+
     <h2>Knockout tournament schedule</h2>
 
     <form method="POST" action="save-results/" class="form-save">
@@ -32,10 +58,10 @@
                             <input type="hidden" name="match_id" value={{ m.id }}>
                             <div id="m{{ m.id }}_t1" class="cell-match-t1">{{ m.t1.name }}</div>
                             <div class="d-flex cell-match-score">
-                                <input type="number" class="me-2 cell-match-s1" id="m{{ m.id }}_sc1" name="t1_score" value="{{ m.t1_score }}" 
+                                <input type="number" min="0" class="me-2 cell-match-s1" id="m{{ m.id }}_sc1" name="t1_score" value="{{ m.t1_score }}" 
                                 onchange="change_winner_style('m{{ m.id }}_sc1', 'm{{ m.id }}_sc2', 'm{{ m.id }}_t1', 'm{{ m.id }}_t2');">
                                 :
-                                <input type="number" class="ms-2 cell-match-s2" id="m{{ m.id }}_sc2" name="t2_score" value="{{ m.t2_score }}" 
+                                <input type="number" min="0" class="ms-2 cell-match-s2" id="m{{ m.id }}_sc2" name="t2_score" value="{{ m.t2_score }}" 
                                 onchange="change_winner_style('m{{ m.id }}_sc2', 'm{{ m.id }}_sc1', 'm{{ m.id }}_t2', 'm{{ m.id }}_t1');">
                             </div>
                             <div id="m{{ m.id }}_t2" class="cell-match-t2">{{ m.t2.name }}</div>

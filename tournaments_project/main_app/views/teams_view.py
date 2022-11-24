@@ -11,15 +11,24 @@ from ..models import RegisteredUser, Team, UserTeam, Tournament
 USER_TEAMS = "user_teams"
 
 class Teams(TemplateView):
-    template_name = 'main_app/user_teams.html'
+    template_name = "main_app/user_teams.html"
+    page_not_found = "page_not_found.html"
 
     def get(self, request):
-        # TODO old teams
+        if(not request.session.get("user")):
+            return render(request, self.page_not_found)
+
+        try:
+            # Event ids which haven't started yet, so the teams can still be changed
+            event_ids = list(Tournament.objects.filter(state__in=[0,1]).values_list("id", flat=True))
+        except:
+            event_ids = []
 
         try:
             # All the teams a user owns
             created_teams = Team.objects.filter(owner=request.session.get("user")["id"])
 
+            created_teams = created_teams.filter(Q(tournament__in=event_ids) | Q(tournament__isnull=True))
         except:
             created_teams = None
         
@@ -29,6 +38,8 @@ class Teams(TemplateView):
 
             # Get all teams a user is present in except those where the user is an owner 
             teams_with_user = Team.objects.filter(id__in=team_ids).filter(~Q(owner=request.session.get("user")["id"]))
+
+            teams_with_user = teams_with_user.filter(Q(tournament__in=event_ids) | Q(tournament__isnull=True))
         except:
             teams_with_user = None
 
@@ -45,9 +56,6 @@ class Teams(TemplateView):
 
         return render(request, self.template_name, args)
 
-    def post(self, request):
-        return render(request, self.template_name)
-
 
     def get_team_list(self, teams):
         """ Get a list model structures of teams, members and events where the teams are joined """
@@ -55,16 +63,21 @@ class Teams(TemplateView):
         result_teams = []
         if(teams):
             try:
-                # Create a structure for each team with members
+                    # Create a structure for each team with members
                 for team in teams:
                     # Get member ids for each team and exclude the owner (current user)
                     team_member_ids = list(UserTeam.objects.filter(team=team.id).values_list("user", flat=True))
-                    team_member_ids.remove(int(team.owner.id))
+                    
+                    event = None
+                    team_members = None
+                    # UserTeam may not exist, if added through Admin
+                    if(team_member_ids):
+                        team_member_ids.remove(int(team.owner.id))
 
-                    team_members = RegisteredUser.objects.filter(id__in=team_member_ids)
-                    # Owner at the first place (should be a current user)
-                    owner = RegisteredUser.objects.get(id=team.owner.id)
-                    team_members = chain([owner], team_members)
+                        team_members = RegisteredUser.objects.filter(id__in=team_member_ids)
+                        # Owner at the first place (should be a current user)
+                        owner = RegisteredUser.objects.get(id=team.owner.id)
+                        team_members = chain([owner], team_members)
 
                     try:
                         event = Tournament.objects.get(id=team.tournament.id)
@@ -324,3 +337,29 @@ class UnjoinEvent(TemplateView):
                 messages.info(request, "You are not an owner of this team")
 
         return redirect(self.user_teams)
+
+class FormerTeams(TemplateView):
+    template_name = Teams.template_name
+    user_teams = USER_TEAMS
+
+    def get(self, request):
+        former_teams = []
+        try:
+            # Get team IDs where a user is 
+            team_ids = list(UserTeam.objects.filter(user=request.session.get("user")["id"]).values_list("team", flat=True))
+            # Event ids which are Ongoing or Finished, so the teams in cannot be changed
+            event_ids = list(Tournament.objects.filter(state__in=[2,3]).values_list("id", flat=True))
+            # Get the teams which are in an ongoing or finished tournament
+            former_db_teams = Team.objects.filter(id__in=team_ids).filter(tournament__in=event_ids)
+        except:
+            former_db_teams = None
+
+        # Get the dictionary list-models with teams and members
+        former_teams = Teams.get_team_list(self, former_db_teams)
+
+        args = {
+            "former_teams": former_teams,
+            "showing_former": 1
+        }
+
+        return render(request, self.template_name, args)
