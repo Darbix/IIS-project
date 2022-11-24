@@ -73,17 +73,14 @@ class QueryTable(TemplateView):
         try:
             model = apps.get_model('main_app', table)
             instance = model.objects.get(id=id)
-        except Exception as e:
-            # Neexistující tabulka/id - nemělo by nastat
-            return self.get(request, e)
-        
-        for field in model._meta.local_fields:
-            if field.name in request.POST:
-                try:
+            for field in model._meta.local_fields:
+                if field.name in request.POST:
                     SetAttrBasedOnType(instance, field, request.POST[field.name])
-                except Exception as e:
-                    return self.get(request, e)
-        instance.save()
+            instance.save()
+        except Exception as e:
+            # Neexistující tabulka/id/...
+            return self.get(request, e)
+
         return self.post_query(request)
 
     def post_add(self, request):
@@ -95,17 +92,13 @@ class QueryTable(TemplateView):
         try:
             model = apps.get_model('main_app', table)
             instance = model()
+            for field in model._meta.local_fields:
+                if field.name in request.POST and request.POST[field.name] != '':
+                    SetAttrBasedOnType(instance, field, request.POST[field.name])
+            instance.save()
         except Exception as e:
-            # Neexistující tabulka/id - nemělo by nastat
             return self.get(request, e)
 
-        for field in model._meta.local_fields:
-            if field.name in request.POST and request.POST[field.name] != '':
-                try:
-                    SetAttrBasedOnType(instance, field, request.POST[field.name])
-                except Exception as e:
-                    return self.get(request, e)
-        instance.save()
         return self.post_query(request)
 
     def post_delete(self, request):
@@ -118,10 +111,10 @@ class QueryTable(TemplateView):
         try:
             model = apps.get_model('main_app', table)
             instance = model.objects.get(id=id)
+            instance.delete()
         except Exception as e:
-            # Neexistující tabulka/id - nemělo by nastat
             return self.get(request, e)
-        instance.delete()
+
         return self.post_query(request)
 
 # Nastaví atribut zadané instanci dle typu hodnoty
