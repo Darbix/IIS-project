@@ -63,4 +63,20 @@
         {% endwith %}
     </div>
 
+    <form method="GET" action="create/">
+        <button class="btn-add-tournament">
+            <span class="fa-solid fa-plus"></span>
+        </button>
+    </form>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}  
+                <script>
+                    alert("{{ message }}");
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}

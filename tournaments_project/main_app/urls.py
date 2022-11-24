@@ -21,6 +21,8 @@ urlpatterns = [
     path('user-teams/upload-team-img/', teams_view.TeamImageUpload.as_view(), name='team_image'),
 
     path('events/', events_view.Events.as_view(), name='events'),
+    path('events/create/', events_view.EventCreate.as_view(), name='create_tournament'),
+    path('events/create/save/', events_view.SaveEvent.as_view(), name='save_new_tournament'),
     path('events/<int:event_id>/', event_view.Event.as_view(), name='event'),
     path('events/<int:event_id>/join/', event_view.Event.as_view(), name='join_tournament'),
     path('events/<int:event_id>/unjoin/', event_view.EventUnjoin.as_view(), name='unjoin_tournament'),
