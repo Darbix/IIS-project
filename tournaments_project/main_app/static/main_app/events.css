@@ -62,6 +62,25 @@
     max-height: 80px;
 }
 
+.btn-add-tournament{
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    background: var(--color2);
+    color: var(--color-bg);
+    border-radius: 35px;
+    border: none;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    font-size: 32px;
+}
+
+.btn-add-tournament:hover{
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
 .moderator-icon{
     font-size: 27px;
     min-width: 45px;

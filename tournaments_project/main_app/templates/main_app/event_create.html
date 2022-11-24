@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'main_app/event_create.css' %}" />
+{% endblock %}
+
+
+{% block main-content %}
+
+    <h1 class="mb-4">Create a tournament</h1>
+        <form method="POST" action="save/">
+            {% csrf_token %}
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-signature"></i></div>
+                    <div class="heading">Name</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <input type="text" id="name" name="name" placeholder="Enter a name of your tournament" value="">
+                </div>
+            </div>
+
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-calendar"></i></div>
+                    <div class="heading">Date</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <input type="datetime-local" id="date" name="date" value="">
+                </div>
+            </div>
+
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-puzzle-piece"></i></div>
+                    <div class="heading">Type</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <select id="type" name="type" value="">
+                        <option value="none" selected disabled hidden>Select a type</option>
+                        {% for type in types %}
+                            <option value="{{ type.id }}">{{ type.type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-scroll"></i></div>
+                    <div class="heading">Description</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <textarea id="description" name="description" placeholder="Provide a brief description" value=""></textarea>
+                </div>
+            </div>
+
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-trophy"></i></div>
+                    <div class="heading">Prize</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <input type="text" id="prize" name="prize" placeholder="Enter a prize for the winner" value="">
+                </div>
+            </div>
+
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-star-half-stroke"></i></div>
+                    <div class="heading">Capacity</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <input type="number" id="capacity" name="capacity" min="1" placeholder="0" value="">
+                </div>
+            </div>
+
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-person-circle-question"></i></div>
+                    <div class="heading">Min team members</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <input type="number" id="min" name="min" min="1" placeholder="0" value="">
+                </div>
+            </div>
+
+            <div class="row title-box mb-5">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-people-group"></i></div>
+                    <div class="heading">Max team members</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <input type="number" id="max" name="max" min="1" placeholder="0" value="">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center">
+                <button class="button" name="create_button">Create</button>
+            </div>
+        </form>
+{% endblock %}
