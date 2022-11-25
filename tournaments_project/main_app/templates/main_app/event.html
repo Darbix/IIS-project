@@ -282,15 +282,15 @@
     {% endif %}
 
     {% if messages %}
-    {% for message in messages %}
-        {% if message.tags %}  
-            <script>
-                window.onload = function() {
-                    alert("{{ message }}");
-                };
-            </script>
-        {% endif %}
-    {% endfor %}
+        {% for message in messages %}
+            {% if message.tags %}  
+                <script>
+                    window.onload = function() {
+                        alert("{{ message }}");
+                    };
+                </script>
+            {% endif %}
+        {% endfor %}
     {% endif %}
 
 {% endblock %}
