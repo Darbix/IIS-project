@@ -83,9 +83,21 @@ def insert_initial_tournament(apps, schema_editor):
         minimum_team_size = 1,
         maximum_team_size = 1
     )
+    t3 = Tournament(
+        name = "Testing tournament (3)",
+        description = "Third testing tournament",
+        date = datetime.now(),
+        prize = "Beer",
+        capacity = 10,
+        type = TournamentType.objects.all()[0],
+        state = 3,
+        minimum_team_size = 1,
+        maximum_team_size = 1
+    )
     try:
         t1.save()
         t2.save()
+        t3.save()
     except Exception as e:
         print(e)
 
@@ -137,6 +149,17 @@ def insert_initial_tournament_team(apps, schema_editor):
     except:
         pass
 
+def insert_initial_admin(apps, schema_editor):
+    RegisteredAdmin = apps.get_model('admin_app', 'RegisteredAdmin')
+    from django.contrib.auth.hashers import make_password
+    admin = RegisteredAdmin(
+        first_name='Default',
+        last_name='Admin',
+        email='test@test.com',
+        password=make_password("123456")
+    )
+    admin.save()
+
 """
     RegisteredUser = apps.get_model('main_app', 'RegisteredUser')
     TournamentType = apps.get_model('main_app', 'TournamentType')
@@ -161,5 +184,6 @@ class Migration(migrations.Migration):
         migrations.RunPython(insert_initial_tournament_types),
         migrations.RunPython(insert_initial_tournament),
         migrations.RunPython(insert_initial_tournament_data),
-        migrations.RunPython(insert_initial_tournament_team)  # Nutné rozdělit na 2 fce - query se provedou až po skončení fce
+        migrations.RunPython(insert_initial_tournament_team),  # Nutné rozdělit na 2 fce - query se provedou až po skončení fce
+        migrations.RunPython(insert_initial_admin),
     ]
