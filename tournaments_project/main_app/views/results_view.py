@@ -1,12 +1,9 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from django.conf import settings
-from itertools import chain
-from django.db.models import Q
 from django.contrib import messages
 from PIL import Image
 from pathlib import Path
-from ..models import RegisteredUser, Team, UserTeam, Tournament
+from ..models import Tournament
 
 class Results(TemplateView):
     template_name = "main_app/results.html"

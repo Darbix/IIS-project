@@ -12,17 +12,16 @@
 <div class="container-fluid content">
 
     <h1 class="mb-3">{{ event.name }}</h1>
-    
+
     <div class="d-flex">
-        <a href="{% url 'event' event.id %}" class="d-flex align-items-center me-4 ms-auto">
-            {% csrf_token %}
+        <a href="{% url 'event' event.id %}" class="d-flex align-items-center ms-auto">
             <button class="btn-circle-right" type="submit">
                 <span class="fa-solid fa-eye text-light"></span>
             </button>
         </a>
 
         {% if request.session.user.id in moderator_ids %}
-            <form method="POST" action="erase-schedule/" class="d-flex align-items-center me-4"
+            <form method="POST" action="erase-schedule/" class="d-flex align-items-center ms-4 me-4"
                     onsubmit="return confirm('Do you realy want to erase this schedule?');">
                 {% csrf_token %}
                 <button class="btn-circle-right" type="submit">
@@ -39,9 +38,57 @@
         {% endif %}
     </div>
 
+
+    {% if winner_team %}
+        <div class="d-flex justify-content-center w-100 mb-5">
+            <div class="team-wrapper">
+                <div class="d-flex align-items-center justify-content-center">
+                    <h2>Tournament winner!<span class="fa-solid fa-trophy ms-3 text-warning"></span></h2>
+                </div>
+
+                <div class="team-box p-3 mb-2 team-readonly">
+                    <div class="d-flex align-items-center h4 team-header mb-1">
+                        <div class="profile-img-div me-3">
+                            <img src="/media/{{ winner_team.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
+                        </div>
+
+                        <span class="team-name">{{ winner_team.info.name }}</span>
+                    </div>
+
+                    {% for member in winner_team.members %}
+                        <div class="player-box mt-1">
+                            <div class="d-flex align-items-center">
+                                <div class="profile-img-div small-img">
+                                    <img src="/media/{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                                </div>
+                                
+                                <div class="row ms-4 w-100">
+                                    <div class="col-lg-6 overflow-hidden">
+                                        <div class="name-div fw-bold {% if member.id == request.session.user.id %}color-ok{% endif %}">
+                                            {{ member.first_name }}&nbsp;{{ member.last_name }}
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 overflow-hidden">
+                                        <div class="email-div">
+                                            {{ member.email }}
+                                        </div>
+                                    </div>  
+                                </div>
+                                <div style="width: 25px" class="me-2">
+                                    {% if member.id == team.info.owner.id %}<i class="fa-solid fa-crown text-warning"></i>{% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+
     <h2>Knockout tournament schedule</h2>
 
-    <form method="POST" action="save-results/" class="form-save">
+    <form method="POST" action="save-results/" class="form-save pb-5">
         {% csrf_token %}
         
         <div id="diagram" class="diagram">
@@ -59,10 +106,12 @@
                             <div id="m{{ m.id }}_t1" class="cell-match-t1">{{ m.t1.name }}</div>
                             <div class="d-flex cell-match-score">
                                 <input type="number" min="0" class="me-2 cell-match-s1" id="m{{ m.id }}_sc1" name="t1_score" value="{{ m.t1_score }}" 
-                                onchange="change_winner_style('m{{ m.id }}_sc1', 'm{{ m.id }}_sc2', 'm{{ m.id }}_t1', 'm{{ m.id }}_t2');">
+                                onchange="change_winner_style('m{{ m.id }}_sc1', 'm{{ m.id }}_sc2', 'm{{ m.id }}_t1', 'm{{ m.id }}_t2');"
+                                {% if request.session.user.id not in moderator_ids %}disabled{% endif %}>
                                 :
                                 <input type="number" min="0" class="ms-2 cell-match-s2" id="m{{ m.id }}_sc2" name="t2_score" value="{{ m.t2_score }}" 
-                                onchange="change_winner_style('m{{ m.id }}_sc2', 'm{{ m.id }}_sc1', 'm{{ m.id }}_t2', 'm{{ m.id }}_t1');">
+                                onchange="change_winner_style('m{{ m.id }}_sc2', 'm{{ m.id }}_sc1', 'm{{ m.id }}_t2', 'm{{ m.id }}_t1');"
+                                {% if request.session.user.id not in moderator_ids %}disabled{% endif %}>
                             </div>
                             <div id="m{{ m.id }}_t2" class="cell-match-t2">{{ m.t2.name }}</div>
                         </div>
@@ -71,23 +120,26 @@
             {% endfor %}
         </div>
 
-    
-        <button class="btn-save-edit">
-            <span class="fa-solid fa-check"></span>
-        </button>
+        {% if request.session.user.id in moderator_ids %}
+            <button class="btn-save-edit">
+                <span class="fa-solid fa-check"></span>
+            </button>
+        {% endif %}
     </form>
 </div>
 
 
 {% comment %} Alerts after a page is loaded {% endcomment %}
 {% if messages %}
-{% for message in messages %}
-    {% if message.tags %}  
-        <script>
-            alert("{{ message }}");
-        </script>
-    {% endif %}
-{% endfor %}
+    {% for message in messages %}
+        {% if message.tags %}  
+            <script>
+                window.onload = function() {
+                    alert("{{ message }}");
+                };
+            </script>
+        {% endif %}
+    {% endfor %}
 {% endif %}
 
 {% endblock %}

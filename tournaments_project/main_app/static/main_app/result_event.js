@@ -26,18 +26,18 @@ window.onload = function(){
         var svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
 
         for(var i=0; i<divs.length; i++){
-            var d = divs[i]
+            var d = divs[i];
             
             // If a team row is done, prepare for the new line
             if(!endTeamRow && !d.classList.contains("cell-team"))
-                endTeamRow = true
+                endTeamRow = true;
 
             // If a number of cells is >= half of the previous count, create a new row
             if(nCurr >= nPrev / 2 && endTeamRow){
                 // Only once (after a team row) compute the size of an SVG plane 
                 if(nPrev == 0){
-                    svg.setAttribute("width", nCurr * (W + SPX) + SPX)
-                    svg.setAttribute("height", nCurr / 2 * (H + SPY) + SPX)
+                    svg.setAttribute("width", nCurr * (W + SPX) + SPX);
+                    svg.setAttribute("height", (1 + Math.ceil(Math.log2(nCurr))) * (H + SPY) + SPX);
                 }
                 
                 // Increase the left gap 
@@ -47,7 +47,7 @@ window.onload = function(){
 
                 // Init new first cell position
                 y += H + SPY;
-                x = INITX
+                x = INITX;
 
                 nPrev = nCurr;
                 nCurr = 0;
@@ -65,6 +65,7 @@ window.onload = function(){
 
             x += W + SPX;
         }
+
         // Append the SVG with lines to a diagram
         diagram.append(svg);
         // Change initial style colors of the elements 

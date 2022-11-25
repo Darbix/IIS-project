@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head-extension %}
+    <link rel="stylesheet" href="{% static 'main_app/stats.css' %}" />
+{% endblock %}
+
+
+{% block main-content %}
+
+    {% if players %}
+        {% for player in players %}
+            <div class="player-box mt-1">
+                <div class="d-flex align-items-center">
+                    <div class="profile-img-div small-img">
+                        <img src="/media/{{ player.info.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                    </div>
+                    
+                    <div class="row ms-4 w-100">
+                        <div class="col-lg-3 overflow-hidden">
+                            <div class="name-div fw-bold {% if player.info.id == request.session.user.id %}color-ok{% endif %}">
+                                {{ player.info.first_name }}&nbsp;{{ player.info.last_name }}
+                            </div>
+                        </div>
+                        <div class="col-lg-2 overflow-hidden">
+                            <div class="n-events-div">
+                                Events&nbsp;played:&nbsp;<span class="color-1">{{ player.n_events }}</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 overflow-hidden">
+                            <div class="n-events-div">
+                                Wins:&nbsp;<span class="color-1">{{ player.n_wins }}</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 overflow-hidden d-flex">
+                            <div class="n-events-div">
+                                Opponents:&nbsp;<span class="color-1">{{ player.n_matches }}</span>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 overflow-hidden">
+                            <div class="n-events-div">
+                                Beaten:&nbsp;<span class="color-1">{{ player.perc_beaten|floatformat:1 }}&nbsp;%</span>
+                            </div>
+                        </div>       
+                    </div>
+                    <div style="width: 25px" class="me-2 d-flex align-items-center">
+                        {% if forloop.counter == 1 %}
+                            <i class="fa-solid fa-medal text-warning h4 m-0"></i>
+                        {% elif forloop.counter == 2 %}
+                            <i class="fa-solid fa-medal text-secondary h4 m-0"></i>
+                        {% elif forloop.counter == 3 %}
+                            <i class="fa-solid fa-medal text-bronze h4 m-0"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}  
+                <script>
+                    window.onload = function() {
+                        alert("{{ message }}");
+                    };
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
