@@ -9,7 +9,6 @@ class LoginAdmin(TemplateView):
     index_page = '/admin/'
 
     def get(self, request):
-        # RegisteredAdmin.CreateDefaultAdmin()
         if RegisteredAdmin.IsLoggedIn(request):
             return redirect(self.index_page)
         
@@ -17,18 +16,16 @@ class LoginAdmin(TemplateView):
 
     def post(self, request):
         if "email" not in request.POST or "password" not in request.POST:
-            # TODO: Error hláška - chybějící email/heslo v post requestu
-            return render(request, self.template_name)
+            return render(request, self.template_name, {"error": "Missing email and/or password"})
         try:
             admin = RegisteredAdmin.objects.get(email=request.POST["email"])
         except RegisteredAdmin.DoesNotExist as e:
-            # TODO: Error hláška - uživatel s tímto emailem neexistuje
-            return render(request, self.template_name)
+            return render(request, self.template_name, {"error": "User with this email doesn't exist"})
 
         passwordOk = check_password(request.POST["password"], admin.password)
         if not passwordOk:
-            # TODO: Error hláška - špatně zadané heslo
-            return render(request, self.template_name)
+            return render(request, self.template_name, {"error": "Incorrect password"})
+
         request.session['admin'] = {
             'id': admin.id,
             'first_name': admin.first_name,

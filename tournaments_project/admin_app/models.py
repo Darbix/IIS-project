@@ -11,15 +11,3 @@ class RegisteredAdmin(models.Model):
     def IsLoggedIn(request):
         x = request.session.get('admin')
         return bool(x)
-
-    # Temporary řešení - vytvoření defaultního admina
-    @staticmethod
-    def CreateDefaultAdmin():
-        from django.contrib.auth.hashers import make_password
-        admin = RegisteredAdmin(
-            first_name='Default',
-            last_name='Admin',
-            email='test@test.com',
-            password=make_password("123456")
-        )
-        admin.save()
