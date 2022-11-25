@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from django.contrib.auth.hashers import check_password
 from django.shortcuts import render, redirect
+from django.contrib import messages
 
 from ..models import RegisteredUser
 
@@ -18,20 +19,19 @@ class LoginUser(TemplateView):
     
     def post(self, request):
         if "email" not in request.POST or "password" not in request.POST:
-            # Chybějící email/heslo v post requestu - pravděpodobně někdo
-            # zkouší zasílat requesty bez našeho frontendu, redirect na index
+            messages.info(request, "Log in rejected")
             return redirect(self.index_page)
         
         try:
             user = RegisteredUser.objects.get(email=request.POST["email"])
         except RegisteredUser.DoesNotExist as e:
-            # TODO: Error hláška - uživatel s tímto emailem neexistuje
-            return redirect(self.index_page)
+            messages.info(request, "A user with this email does not exist")
+            return render(request, self.template_name)
 
         passwordOk = check_password(request.POST["password"], user.password)
         if not passwordOk:
-            # TODO: Error hláška - špatně zadané heslo
-            return redirect(self.index_page)
+            messages.info(request, "Error: wrong password")
+            return render(request, self.template_name)
         
         request.session['user'] = {
             'id': user.id,
@@ -43,5 +43,7 @@ class LoginUser(TemplateView):
             'avatar_url': user.avatar.url,
             'join_date': user.join_date.strftime("%Y-%m-%d"),
         }
+
+        messages.info(request, "You were successfully logged in")
 
         return redirect(self.index_page)

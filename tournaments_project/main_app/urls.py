@@ -1,6 +1,6 @@
 from django.urls import path
 # from . import views
-from .views import login_view, main_view, registration_view, profile_view, logout_view, events_view, event_view, teams_view, results_view, result_view
+from .views import login_view, main_view, registration_view, profile_view, logout_view, events_view, event_view, teams_view, results_view, result_view, stats_view
 
 urlpatterns = [
     path('', main_view.index, name='index'),
@@ -38,4 +38,6 @@ urlpatterns = [
     path('results/<int:event_id>/', result_view.ResultEvent.as_view(), name='result_event'),
     path('results/<int:event_id>/save-results/', result_view.SaveResults.as_view(), name='save_results'),
     path('results/<int:event_id>/erase-schedule/', result_view.EraseSchedule.as_view(), name='erase_schedule'),
+
+    path('stats/', stats_view.Stats.as_view(), name='stats'),
 ]

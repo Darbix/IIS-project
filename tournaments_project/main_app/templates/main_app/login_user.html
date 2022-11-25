@@ -29,19 +29,6 @@
                 <input type="password" class="form-control" name="password" placeholder="Password"/>
             </div>
             
-            <div class="row mb-4">
-                <div class="col-6 d-flex justify-content-center">
-                    <div class="form-check">
-                        <input class="form-check-input remember-me" type="checkbox"/>
-                        <span>Remember me</span>
-                    </div>
-                </div>
-            
-                <div class="col-6">
-                    <a href="#">Forgot password?</a>
-                </div>
-            </div>
-            
             <button type="submit" class="btn btn-primary mb-4" id="btn-login">Log in</button>
             
             <div class="text-center">
@@ -50,7 +37,18 @@
         </form>
 
         {% endblock %}
-
     </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags %}  
+                <script>
+                    window.onload = function() {
+                        alert("{{ message }}");
+                    };
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
 
 {% endblock %}

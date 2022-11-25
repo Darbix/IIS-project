@@ -3,10 +3,6 @@ from django.shortcuts import render, redirect
 from ..models import Tournament, TournamentType
 from django.db.models import Q
 from django.contrib import messages
-
-# from django.core.validators import validate_email
-# from django.core.exceptions import ValidationError
-
 from ..models import RegisteredUser, UserTournamentModerator
 from datetime import datetime
 
@@ -75,7 +71,7 @@ class SaveEvent(TemplateView):
         if("event_id" in request.POST):
             try:
                 # Existing event will be changed or a new one created
-                event = Tournament.objects.get(id=request.POST["event_id"])
+                event = Tournament.objects.get(id=int(request.POST["event_id"]))
                 moderator_ids = list(UserTournamentModerator.objects.filter(tournament=event.id).values_list("user", flat=True))
                 
                 if(request.session.get("user")["id"] not in moderator_ids):

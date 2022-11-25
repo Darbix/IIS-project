@@ -1,7 +1,6 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-from ..models import Tournament, TournamentType, Team, UserTournamentModerator, RegisteredUser, UserTeam, TournamentMatch, TournamentRound, KnockoutMatch
-from datetime import datetime
+from ..models import Tournament, Team, UserTournamentModerator, RegisteredUser, UserTeam, TournamentMatch, TournamentRound, KnockoutMatch
 from django.db.models import Q
 from itertools import chain
 from django.contrib import messages
@@ -210,6 +209,7 @@ class Event(TemplateView):
 
         return redirect("event", event_id=kwargs["event_id"])
 
+    
 class EventUnjoin(TemplateView):
     def post(self, request, *args, **kwargs):
         try:
@@ -233,6 +233,7 @@ class EventUnjoin(TemplateView):
 
         return redirect("event", event_id=kwargs["event_id"])
 
+    
 class ConfirmTeam(TemplateView):
     def post(self, request, *args, **kwargs):
         try:
@@ -251,6 +252,7 @@ class ConfirmTeam(TemplateView):
 
         return redirect("event", event_id=kwargs["event_id"])
 
+    
 class DeclineTeam(TemplateView):
     def post(self, request, *args, **kwargs):
         try:
@@ -272,6 +274,7 @@ class DeclineTeam(TemplateView):
 
         return redirect("event", event_id=kwargs["event_id"])
 
+    
 class RemoveTournament(TemplateView):
     def post(self, request, *args, **kwargs):
         try:
@@ -285,6 +288,7 @@ class RemoveTournament(TemplateView):
         messages.info(request, "The tournament was successfully removed")
         return redirect("events")
 
+
 class GenerateSchedule(TemplateView):
     def post(self, request, *args, **kwargs):
         try:
@@ -293,6 +297,7 @@ class GenerateSchedule(TemplateView):
             messages.info(request, "The event does not exist")
             return redirect("event", event_id=kwargs["event_id"])
 
+        # Remove existing matches
         try:
             matches = TournamentMatch.objects.filter(tournament=kwargs["event_id"])
             for match in matches:
@@ -304,15 +309,17 @@ class GenerateSchedule(TemplateView):
         
         try:
             teams = list(Team.objects.filter(tournament=kwargs["event_id"], confirmed=1))
+            # Shuffle the team for later pairs
             random.shuffle(teams)
 
             if(len(teams) % 2 != 0 and len(teams) != 0):
                 messages.info(request, "A number of teams is not even")
                 return redirect("event", event_id=kwargs["event_id"])
-            
+
             # Create len(teams) / 2 matches for all pairs
             matches = [TournamentMatch(tournament=event, state=1, team_1_score=0, team_2_score=0) for _ in range(int(len(teams) / 2))]
             pairs = [TournamentRound(match=matches[int(i / 2)], team_1=teams[i], team_2=teams[i+1]) for i in range(0, len(teams), 2)]
+
         except:
             messages.info(request, "Team loading failed")
             return redirect("event", event_id=kwargs["event_id"])
@@ -326,6 +333,7 @@ class GenerateSchedule(TemplateView):
             # While the previous row has more that 1 matches
             while(n > 1):
                 matches += [TournamentMatch(tournament=event, state=1, team_1_score=0, team_2_score=0) for _ in range(int(n / 2))]
+                # Elimination match get the Match id, and team winners from the previous matches starting at (m_pos + i) in matches
                 elims += [
                     KnockoutMatch(match=matches[m_cnt + int(i / 2)], 
                         team_1_match_winner=matches[m_pos + i], 
@@ -339,19 +347,21 @@ class GenerateSchedule(TemplateView):
         except:
             messages.info(request, "Schedule generation unexpectedly failed")
 
-        if(matches and pairs and elims):
+        if(matches and pairs):
             try:
                 for match in matches:
                     match.save() 
                 for pair in pairs:
                     pair.save() 
-                for elim in elims:
-                    elim.save() 
+                if(elims):
+                    for elim in elims:
+                        elim.save() 
             except:
                 messages.info(request, "Schedule generation failed")
 
         messages.info(request, "The tournament schedule was randomly generated")
         return redirect("result_event", event_id=kwargs["event_id"])
+
     
 class ChangeState(TemplateView):
     def post(self, request, *args, **kwargs):
@@ -370,3 +380,4 @@ class ChangeState(TemplateView):
             messages.info(request, "The event does not exist")
 
         return redirect("event", event_id=kwargs["event_id"])
+    
