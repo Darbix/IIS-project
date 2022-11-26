@@ -1,0 +1,92 @@
+#content{
+    min-height: 100%;
+    color: white;
+    padding: 80px 0;
+    max-width: 1600px;
+}
+.tournament-ref {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+.tournament-ref:hover{
+    color: inherit;
+}
+
+.tournament{
+    margin: 0;
+    min-height: 90px;
+}
+
+.tournament-ref:hover .box-left,
+.tournament-ref:hover .box-right{
+    background: var(--color-box-header);
+    transition: all 0.15s ease;
+}
+
+.tournament > .box-left{
+    font-size: 25px;
+    min-width: 180px;
+    padding: 0 25px 0 25px;
+    margin-right: 8px;
+    background: var(--color-box);
+    border-radius: 5px;
+}
+
+.tournament > .box-left i{
+    font-size: 33px;
+}
+
+.tournament-type{
+    color: var(--color1);
+}
+
+.box-right{
+    background: var(--color-box);
+    border-radius: 5px;
+}
+
+.tournament-title{
+    font-size: 22px;
+    font-family: var(--font1);
+}
+
+.tournament-description{
+    font-size: 19px;
+    opacity: 0.8;
+}
+
+.tournament-description p{
+    overflow: hidden;
+    /* If the block is under the title, constraint its height */
+    max-height: 80px;
+}
+
+.btn-add-tournament{
+    width: 70px;
+    height: 70px;
+    line-height: 70px;
+    background: var(--color2);
+    color: var(--color-bg);
+    border-radius: 35px;
+    border: none;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    font-size: 32px;
+}
+
+.btn-add-tournament:hover{
+    opacity: 0.8;
+    transition: all 0.2s ease;
+}
+
+.moderator-icon{
+    font-size: 29px;
+    min-width: 45px;
+    margin-right: 5px;
+}
+
+.unconfirmed-event{
+    opacity: 0.6;
+}

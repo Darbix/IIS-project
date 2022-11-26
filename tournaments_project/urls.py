@@ -23,7 +23,7 @@ urlpatterns = [
     # path('admin/', admin.site.urls), # Do not use the django admin module
     path('admin/', include('admin_app.urls')),
     path('', include('main_app.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 # Handle Page not found 404 error
 handler404 = 'main_app.views.main_view.handler404'

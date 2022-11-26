@@ -24,7 +24,8 @@ MEDIA_URL = '/media/'
 
 # TODO: Pro deployment změnit tuto cestu a spustit `python3 manage.py collectstatic`
 # - slouží k přesunutí statických souborů
-#STATIC_ROOT = os.path.join(BASE_DIR, '../static')
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -35,7 +36,7 @@ SECRET_KEY = 'django-insecure-1)hqfusi^1%gpcvkrsigs@3pnyh#7@e9us57)+r^we2zvzp+pu
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
+ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else ['127.0.0.1']
 
 
 # Application definition
