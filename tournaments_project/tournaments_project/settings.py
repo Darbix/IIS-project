@@ -33,9 +33,9 @@ MEDIA_URL = '/media/'
 SECRET_KEY = 'django-insecure-1)hqfusi^1%gpcvkrsigs@3pnyh#7@e9us57)+r^we2zvzp+pu'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True # TODO False + add ALLOWED_HOSTS to show page_not_found when error 404
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tournamentmanager.azurewebsites.net', '127.0.0.1']
 
 
 # Application definition
