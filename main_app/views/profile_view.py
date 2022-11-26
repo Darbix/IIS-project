@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import check_password, make_password
 from django.conf import settings
+from django.contrib import messages
 
 from ..models import RegisteredUser
 
@@ -61,7 +62,6 @@ class Profile(TemplateView):
             'avatar_url': user.avatar.url,
             'join_date': user.join_date.strftime("%Y-%m-%d"),
         }
-        print(user.birth_date)
         return render(request, self.template_name)
 
 class ProfileImageUpload(TemplateView):
@@ -81,21 +81,27 @@ class ProfileImageUpload(TemplateView):
             del request.session['user']
             return redirect(self.index_page)
 
-        file_path = "/avatars/" + str(user.id) + ".png"
-        new_path = settings.MEDIA_ROOT + file_path
+        file_path = "/static/avatars/" + str(user.id) + ".png"
+        new_path = str(settings.BASE_DIR) + file_path
         try:
             im = Image.open(file)
             im.resize((256, 256))
-            im.save(Path(new_path), "PNG")
+            im.save(new_path, "PNG")
         except Exception as e:
-            # Neplatný img soubor
+            messages.info(request, "Invalid image")
             return redirect(self.index_page)
         user.avatar = file_path
         user.save()
 
-        # update session
-        request.session['user']['avatar_url'] = user.avatar.url
-
-        response = redirect(self.profile_page)
-        response['only-if-cached'] = 'must-revalidate' # (!) Jinak se avatary neupdatují
-        return response
+        # update session - update 1 položky nelze z nějakého důvodu
+        request.session['user'] = {
+            'id': request.session['user']['id'],
+            'first_name': request.session['user']['first_name'],
+            'last_name': request.session['user']['last_name'],
+            'email': request.session['user']['email'],
+            'description': request.session['user']['description'],
+            'birth_date': request.session['user']['birth_date'],
+            'avatar_url': file_path,
+            'join_date': request.session['user']['join_date'],
+        }
+        return redirect(self.profile_page)

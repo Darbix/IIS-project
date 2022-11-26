@@ -136,8 +136,9 @@ class TeamImageUpload(TemplateView):
             return redirect(self.user_teams)
 
         # Team logo path
-        file_path = "/avatars/t" + str(team.id) + ".png"
-        new_path = settings.MEDIA_ROOT + file_path
+        file_path = "/static/avatars/t" + str(team.id) + ".png"
+        new_path = str(settings.BASE_DIR) + file_path
+
         try:
             im = Image.open(file)
             im.resize((256, 256))
@@ -150,8 +151,6 @@ class TeamImageUpload(TemplateView):
         messages.info(request, "The team image was saved")
 
         response = redirect(self.user_teams)
-        # Cache avatar update
-        response["only-if-cached"] = "must-revalidate"
         return response
 
 class AddTeammate(TemplateView):

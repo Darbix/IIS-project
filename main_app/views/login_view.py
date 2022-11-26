@@ -44,6 +44,4 @@ class LoginUser(TemplateView):
             'join_date': user.join_date.strftime("%Y-%m-%d"),
         }
 
-        messages.info(request, "You were successfully logged in")
-
         return redirect(self.index_page)
