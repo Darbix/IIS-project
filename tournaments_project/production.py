@@ -19,6 +19,10 @@ MIDDLEWARE = [
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_ROOT = BASE_DIR / 'static'
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://https://tournamentmanager.azurewebsites.net'
+]
+
 # DBHOST is only the server name, not the full URL
 #hostname = os.environ['DBHOST']
 
