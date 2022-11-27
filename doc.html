@@ -14,7 +14,7 @@
 <!-- Zkontrolujte prosím nastavení kódování v hlavièce dokumentu 
      podle pou¾itého editoru -->
 
-<h1>Název zadání (editujte)</h1> <!-- Nahradte názvem svého zadání -->
+<h1>Tournament manager</h1> <!-- Nahradte názvem svého zadání -->
 
 <dl>
     <dt>Autoøi</dt>
@@ -31,16 +31,16 @@
         popis èinnosti v týmu
     </dd>
     <dt>URL aplikace</dt>
-    <dd><a href="http://www.stud.fit.vutbr.cz/~xautor01/IIS">http://DOPLNIT.XYZ/</a></dd>
-    <dd>Admin stránka: <a href="http://www.stud.fit.vutbr.cz/~xautor01/IIS">http://DOPLNIT.XYZ/admin</a></dd>
+    <dd><a href="https://tournamentmanager.azurewebsites.net/">https://tournamentmanager.azurewebsites.net/</a></dd>
+    <dd>Admin stránka: <a href="https://tournamentmanager.azurewebsites.net/admin">https://tournamentmanager.azurewebsites.net/admin</a></dd>
 </dl>
 
 <h2>U¾ivatelé systému pro testování</h2>
 <p>Uveïte prosím existující zástupce <strong>v¹ech rolí u¾ivatelù</strong>.</p>
 <table>
 <tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
-<tr><td>test@email.com</td><td>123456</td><td>U¾ivatel</td></tr>
-<tr><td>test2@email.com</td><td>123456</td><td>U¾ivatel (se zalo¾eným turnajem - zakladatel turnaje)</td></tr>
+<tr><td>test@test.com</td><td>123456</td><td>U¾ivatel</td></tr>
+<tr><td>test2@test.com</td><td>123456</td><td>U¾ivatel (se zalo¾eným turnajem - zakladatel turnaje)</td></tr>
 <tr><td>test@email.com</td><td>123456</td><td>Výchozí administrátor (na admin stránce)</td></tr>
 </tbody></table>
 
@@ -63,17 +63,57 @@
 </p>
 
 <h3>Hlavní aplikace</h3>
-
+<p>
+    Z úvodní stránky je mo¾né se pomocí horních zálo¾ek dostat na stránku naplánovaných turnajù, na stránku výsledkù nebo stránku zobrazující statistiku v¹ech u¾ivatelù.
+    Kliknutím na ikonku u¾ivatele je mo¾no se pøihlásit, pøípadnì vytvoøit nový úèet. 
+</p>
+<p>
+    Na stránce turnajù <i>Events</i> jsou vypsány v¹echny následující turnaje, na které je mo¾no se pøihlásit. Po pøihlá¹ení je také mo¾no vytvoøit nový turnaj pomocí tlaèítka <b>+</b> vpravo dole.
+    Zakladatel turnaje se takté¾ stává správcem a má mo¾nost pøidat práva správce i ostatním u¾ivatelùm.
+</p>
+<p>
+    Stránka výsledkù <i>Results</i> obsahuje v¹echny ukonèené a právì probíhající turnaje. Po rozkliknutí turnaje se zobrazí výsledky jednotlivých zápasù (pøípadnì výsledek celého turnaje) pomocí diagramu typu <i>pavouk</i>.
+</p>
+<p>
+    Celkové statistiky v¹ech u¾ivatelù se zobrazí po kliknutí na zálo¾ku <i>Stats</i>. U¾ivatelé jsou seøazeni podle procenta výher proti jejich oponentùm.
+</p>
+<p>
+    Pøihlá¹ený u¾ivatel má po kliknutí na ikonku u¾ivatele také mo¾nost editace vlastního profilu <i>Profile</i> nebo týmù <i>Teams</i>. V sekci týmù vidí jak týmy, do kterých patøí, tak i týmy, které sám vytvoøil pomocí tlaèítka <b>+</b> vpravo dole.
+</p>
+<p>
+    Zdrojové soubory jsou dostupné v /main_app/:
+    <ul>
+        <li>urls.py - routování</li>
+        <li>models.py - definice tabulek pro u¾ivatele, turnaje a týmy</li>
+        <li>templates/* - "django templates" html stránky</li>
+        <li>views/* - backend pro template html stránky</li>
+    </ul>
+<p>
+    Zdrojový soubor pro <b>vzhled úvodní stránky</b> je dostupný v <b>/main_app/templates/main_app/index.html</b> a pro <b>základní vzhled aplikace</b> je dostupný v <b>/main_app/templates/main_app/base.html</b> (frontend).
+    <br/>
+    Zdrojové soubory pro <b>správu turnajù</b> jsou dostupné v <b>/main_app/views/events_view.py</b> a <b>/main_app/views/event_view.py</b> (backend),
+    <b>/main_app/templates/main_app/event.html</b>, <b>/main_app/templates/main_app/events.html</b> a <b>/main_app/templates/main_app/event_create.html</b> (frontend).
+    <br/>
+    Zdrojové soubory pro <b>správu u¾ivatele</b> jsou dostupné v <b>/main_app/views/login_view.py</b>, <b>/main_app/views/logout_view.py</b>, <b>/main_app/views/profile_view.py</b> a <b>/main_app/views/registration_view.py</b> (backend),
+    <b>/main_app/templates/main_app/login_user.html</b>, <b>/main_app/templates/main_app/register_user.html</b>, <b>/main_app/templates/main_app/user_profile.html</b> a NEVIM TODO<b>/main_app/templates/main_app/add_user.html</b> NEVIM TODO (frontend).
+    <br/>
+    Zdrojové soubory pro <b>správu týmù</b> jsou dostupné v <b>/main_app/views/teams_view.py</b> (backend), <b>/main_app/templates/main_app/user_teams.html</b> (frontend).
+    <br/>
+    Zdrojové soubory pro <b>správu výsledkù</b> jsou dostupné v <b>/main_app/views/result_view.py</b> a <b>/main_app/views/results_view.py</b> (backend), 
+    <b>/main_app/templates/main_app/results.html</b> a <b>/main_app/templates/main_app/result_event.html</b> (frontend).
+    <br/>
+    Zdrojové soubory pro <b>správu statistik</b> jsou dostupné v <b>/main_app/views/stats_view.py</b> (backend), <b>/main_app/templates/main_app/stats.html</b> (frontend).
+</p>
 
 <h3>Admin aplikace</h3>
 <p>
     Úvodní stránka obsahuje statistiky (poèet turnajù a u¾ivatelù).
-    Dále je mo¾né spravovat a potvrzovat turnaje (v pravé zálo¾ce "Tournaments"),
-    spravovat u¾ivatele ("Users"), spravovat administrátory ("Admins")
-    a pokud je to nutné, tak spravovat v¹echny dostupné tabulky z hlavní aplikace ("Query").
+    Dále je mo¾né spravovat a potvrzovat turnaje (v pravé zálo¾ce <i>Tournaments</i>),
+    spravovat u¾ivatele (<i>Users</i>>), spravovat administrátory (<i>Admins</i>)
+    a pokud je to nutné, tak spravovat v¹echny dostupné tabulky z hlavní aplikace (<i>Query</i>).
 </p>
 <p>
-    Zdrojové soubory jsou dostupné v /tournaments_project/admin_app/:
+    Zdrojové soubory jsou dostupné v /admin_app/:
     <ul>
         <li>urls.py - routování</li>
         <li>models.py - definice tabulky pro administrátory</li>
