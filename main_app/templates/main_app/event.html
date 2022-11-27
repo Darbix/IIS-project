@@ -55,9 +55,7 @@
                 </button>
             </form>
 
-            {% comment %} {% url 'events_create' %} TODO {% endcomment %}
             <form method="GET" action="{% url 'create_tournament' event.id %}" class="d-flex align-items-center">
-                {% comment %} {% csrf_token %} {% endcomment %}
                 <button class="btn-circle-right ms-auto btn-edit-event" type="submit">
                     <span class="fa-solid fa-gear"></span>
                 </button>
@@ -146,7 +144,7 @@
         <div id="team-box" class="p-3">
             <div class="d-flex align-items-center h4 team-header mb-1">
                 <div class="profile-img-div me-3">
-                    <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
+                    <img src="{{ team.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
                 </div>
                 {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name">{{ team.info.name }}</span>
 
@@ -166,7 +164,7 @@
                 <div class="player-box mt-1">
                     <div class="d-flex align-items-center">
                         <div class="profile-img-div small-img">
-                            <img src="/media/{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                            <img src="{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                         </div>
                         
                         <div class="row ms-3 w-100">
@@ -228,7 +226,7 @@
         {% for t in unconfirmed_teams %}
             <div class="d-flex align-items-center h4 all-teams team-header">
                 <div class="profile-img-div me-3">
-                    <img src="/media/avatars/default.png" class="rounded-circle full-width profile-img" alt=" "/>
+                    <img src="{{ t.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
                 </div>
                 {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name mx-2">{{ t.info.name }}</span>
                 
@@ -265,7 +263,7 @@
         {% for t in teams %}
             <div class="d-flex align-items-center h4 all-teams team-header">
                 <div class="profile-img-div me-3">
-                    <img src="/media/{{ t.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
+                    <img src="{{ t.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
                 </div>
                 {% if event.maximum_team_size > 1%}Team&nbsp;{% endif %}<span class="team-name">{{ t.info.name }}</span>
 
