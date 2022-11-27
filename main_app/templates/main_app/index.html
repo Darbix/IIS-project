@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block main-content %}
-    <div class="container" style="position: relative; top: 80px">
+    <div class="container game-icons pb-2">
         <div class="d-flex justify-content-between">
             <span class="chess-fig">
                 <i class="fa-solid fa-chess-rook fa-rotate-by rook" style="--fa-rotate-angle: 25deg;"></i>
@@ -24,10 +24,11 @@
             </div>
         </div>
     </div>
-    <div class="container" style="position: relative; bottom: -300px">
-        <div style="font-family: var(--font1); font-size: 50px; white-space: nowrap; color: var(--color1); text-align: center; margin-right: 700px"> Create a team </div>
-        <div style="font-family: var(--font1); font-size: 50px; white-space: nowrap; color: var(--color2); text-align: center"> Join a tournament </div>
-        <div class="win-text" style="color: rgb(210, 180, 0); font-size: 50px; font-family: var(--font1); white-space: nowrap; text-align: center; margin-left: 700px;"> Win great prizes! </div>
+
+    <div class="container text-lines mt-5">
+        <div class="left-text"> Create a team </div>
+        <div class="center-text"> Join a tournament </div>
+        <div class="win-text"><span class="win-text-shine">Win great prizes!</span></div>
     </div>
 
     {% if messages %}

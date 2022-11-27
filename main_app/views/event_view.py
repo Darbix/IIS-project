@@ -180,29 +180,34 @@ class Event(TemplateView):
             try:
                 team = Team.objects.get(id=int(request.POST["player_team"]))
 
-                # Get the users in this team
-                user_ids = list(UserTeam.objects.filter(team=team.id).values_list("user", flat=True))
-                users = RegisteredUser.objects.filter(id__in=user_ids)
+                if(team):
+                    # Get the users in this team
+                    user_ids = list(UserTeam.objects.filter(team=team.id).values_list("user", flat=True))
+                    users = RegisteredUser.objects.filter(id__in=user_ids)
 
-                not_in_tournament = True
-                # Check if all users are not in this tournament yet
-                for user in users:
-                    userteams_team_ids = list(UserTeam.objects.filter(user=user.id).values_list("team", flat=True))
-                    
-                    if(userteams_team_ids):
-                        # Find all teams in this tournament which contain the user
-                        teams_with_user = Team.objects.filter(tournament=event.id).filter(id__in=userteams_team_ids)
+                    not_in_tournament = True
 
-                        if(teams_with_user.count() > 0):
-                            not_in_tournament = False
-                            messages.info(request, "The user " + user.first_name + " " + user.last_name + " is already in this tournament")
-                            break
+                    if(users and users.count() <= event.maximum_team_size and users.count() >= event.minimum_team_size):
+                        # Check if all users are not in this tournament yet
+                        for user in users:
+                            userteams_team_ids = list(UserTeam.objects.filter(user=user.id).values_list("team", flat=True))
+                            
+                            if(userteams_team_ids):
+                                # Find all teams in this tournament which contain the user
+                                teams_with_user = Team.objects.filter(tournament=event.id).filter(id__in=userteams_team_ids)
 
-                if(team and not_in_tournament):
-                    team.tournament = event
-                    team.save()
-                    
-                    messages.info(request, "Your request to join the tournament was sent to its manager")
+                                if(teams_with_user.count() > 0):
+                                    not_in_tournament = False
+                                    messages.info(request, "The user " + user.first_name + " " + user.last_name + " is already in this tournament")
+                                    break
+
+                        if(not_in_tournament):
+                            team.tournament = event
+                            team.save()
+                            
+                            messages.info(request, "Your request to join the tournament was sent to its manager")
+                    else:
+                        messages.info(request, "Your team has a wrong number of players")
             except:
                 messages.info(request, "Cannot join the tournament")
                 pass

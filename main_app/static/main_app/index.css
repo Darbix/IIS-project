@@ -1,15 +1,19 @@
+.game-icons{
+    position: relative;
+}
+
 .trophy-box{
     position: absolute; 
-    top: -160px;
+    top: -155px;
 }
 
 .trophy-icon{
     filter: drop-shadow(0 0 40px rgb(210, 180, 0)); 
-    font-size: 250px;
+    font-size: 240px;
 }
 
 .board-icon{
-    font-size: 180px; 
+    font-size: 170px; 
     color: var(--color2); 
     transform: scale(4, 1) 
     skew(-20deg);
@@ -18,8 +22,9 @@
 .chess-fig{
     animation: shake 0.5s;
     animation-iteration-count: infinite;
-    font-size: 180px; 
+    font-size: 165px; 
     color: var(--color1);
+    z-index: 100;
 }
 
 @keyframes shake {
@@ -29,20 +34,38 @@
 }
   
 .win-text {
-    background: linear-gradient(to right, rgb(210, 180, 0) 0, hsl(0, 0%, 100%) 10%, rgb(210, 180, 0) 20%);
+    text-align: right;
+}
+
+.win-text-shine{
+    animation: shine 1.8s infinite linear;
+    background: linear-gradient(to right, rgb(210, 180, 0) 0, white 20%, rgb(210, 180, 0) 40%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: shine 2.5s infinite linear;
+    color: rgb(210, 180, 0); 
 }
-  
+
 @keyframes shine {
     0% {
       background-position: 0px;
     }
-    50% {
-      background-position: 500px;
-    }
     100% {
-      background-position: 0px;
+      background-position: 525px;
     }
+}
+
+.text-lines{
+    text-align: center;
+    font-size: 50px;
+    white-space: nowrap;
+    font-family: var(--font1); 
+}
+
+.left-text{
+    color: var(--color1); 
+    text-align: left;
+}
+
+.center-text{
+    color: var(--color2);
 }
