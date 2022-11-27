@@ -24,6 +24,7 @@
     animation-iteration-count: infinite;
     font-size: 165px; 
     color: var(--color1);
+    z-index: 100;
 }
 
 @keyframes shake {
@@ -33,23 +34,23 @@
 }
   
 .win-text {
-    background: linear-gradient(to right, rgb(210, 180, 0) 0, hsl(0, 0%, 100%) 10%, rgb(210, 180, 0) 20%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: shine 2.5s infinite linear;
-    color: rgb(210, 180, 0); 
     text-align: right;
 }
-  
+
+.win-text-shine{
+    animation: shine 1.8s infinite linear;
+    background: linear-gradient(to right, rgb(210, 180, 0) 0, white 20%, rgb(210, 180, 0) 40%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: rgb(210, 180, 0); 
+}
+
 @keyframes shine {
     0% {
       background-position: 0px;
     }
-    50% {
-      background-position: 500px;
-    }
     100% {
-      background-position: 0px;
+      background-position: 525px;
     }
 }
 
