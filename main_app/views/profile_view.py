@@ -81,7 +81,7 @@ class ProfileImageUpload(TemplateView):
             del request.session['user']
             return redirect(self.index_page)
 
-        file_path = "/static/avatars/" + str(user.id) + ".png"
+        file_path = "/media/avatars/" + str(user.id) + ".png"
         new_path = str(settings.BASE_DIR) + file_path
         try:
             im = Image.open(file)

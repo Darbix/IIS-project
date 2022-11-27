@@ -136,7 +136,7 @@ class TeamImageUpload(TemplateView):
             return redirect(self.user_teams)
 
         # Team logo path
-        file_path = "/static/avatars/t" + str(team.id) + ".png"
+        file_path = "/media/avatars/t" + str(team.id) + ".png"
         new_path = str(settings.BASE_DIR) + file_path
 
         try:
