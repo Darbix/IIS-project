@@ -51,11 +51,15 @@ class EventCreate(TemplateView):
             messages.info(request, "Incorrect event")
             return redirect(self.events_page)
 
+        users = list(RegisteredUser.objects.filter(~Q(email=request.session.get("user")["email"])))
         game_types = list(TournamentType.objects.all())
+
         args = {
             "event": event,
-            "types": game_types
+            "types": game_types,
+            "users": users
         }
+
         return render(request, self.template_event_create, args)
 
 class SaveEvent(TemplateView):
@@ -68,7 +72,7 @@ class SaveEvent(TemplateView):
             return redirect(self.events_page)
 
         event = None
-        if("event_id" in request.POST):
+        if("event_id" in request.POST and request.POST["event_id"]):
             try:
                 # Existing event will be changed or a new one created
                 event = Tournament.objects.get(id=int(request.POST["event_id"]))
@@ -125,31 +129,16 @@ class SaveEvent(TemplateView):
             tournament = None
 
         try:
-            tournament_moderator = UserTournamentModerator(user = session_user, tournament = tournament)
-            tournament_moderator.save()
+            moderators_to_add = [session_user]
+            # Get list of selected user's ids
+            for strid in request.POST.getlist("moderators"):
+                # Create list of 'RegisteredUser' type items
+                moderators_to_add.append(RegisteredUser.objects.get(id = eval(strid)))
+            for moderator in moderators_to_add:
+                # Add new moderator in case he/she is not already a moderator of the tournament
+                if not UserTournamentModerator.objects.filter(user = moderator, tournament = tournament).exists():
+                    UserTournamentModerator(user = moderator, tournament = tournament).save()
         except:
-            tournament_moderator = None
+            messages.warning(request, "Adding moderators failed")
 
         return redirect(self.events_page)
-
-# TODO: 
-# class EditEvent(TemplateView):
-#     template_event_save = "main_app/events.html"
-
-#     def post(self, request):
-
-#         # # try:
-#         tournament.name = request.POST["name"]
-#         tournament.date = datetime.strptime(request.POST["date"], "%Y-%m-%d-%H-%M")
-#         tournament.type = request.POST["type"]
-#         tournament.description = request.POST["description"]
-#         tournament.prize = request.POST["prize"]
-#         tournament.capacity = int(request.POST["capacity"])
-#         tournament.minimum_team_size = int(request.POST["min"])
-#         tournament.maximum_team_size = int(request.POST["max"])
-#         #     # tournament.save()
-#         # messages.info(request, "The tournament was successfully edited")
-#         # except:
-#         #     messages.info(request, "The tournament was not edited")
-
-#         return render(request, self.template_event_save)
