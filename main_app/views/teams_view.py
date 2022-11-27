@@ -178,7 +178,7 @@ class AddTeammate(TemplateView):
         userteam = None
         not_in_tournament = True
         if(team and player):
-            # TODO must not be in the tournament if the team is, yet
+            # Cannot be already in the tournament
             if(team.tournament != None):
                 try:
                     userteams_team_ids = list(UserTeam.objects.filter(user=player.id).values_list("team", flat=True))

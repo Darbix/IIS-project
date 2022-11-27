@@ -1,17 +1,16 @@
 const DEF_SPACE_X = 10 // px Horizontal initial gap
 const DEF_SPACE_Y = 50 // px Vertical initial gap
 
-window.onload = function(){
-
+function create_diagram(){
     var diagram = document.getElementById("diagram");
-    var divs = diagram.getElementsByClassName("cell")
+    var divs = diagram.getElementsByClassName("cell");
 
-    if(divs){
-        var W = divs[0].offsetWidth  // Width of the div cell
-        var H = divs[0].offsetHeight // Height of the div cell
+    if(divs && divs.length > 0){
+        var W = divs[0].offsetWidth;  // Width of the div cell
+        var H = divs[0].offsetHeight; // Height of the div cell
 
-        var SPX = DEF_SPACE_X // Horizontal space between cells, that increases each row
-        var SPY = DEF_SPACE_Y // Vertical Space between cells
+        var SPX = DEF_SPACE_X; // Horizontal space between cells, that increases each row
+        var SPY = DEF_SPACE_Y; // Vertical Space between cells
         
         var x = DEF_SPACE_X; // Current X position of the cell
         var y = DEF_SPACE_X; // Current Y position of the cell

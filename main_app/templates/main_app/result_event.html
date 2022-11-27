@@ -130,16 +130,20 @@
 
 
 {% comment %} Alerts after a page is loaded {% endcomment %}
-{% if messages %}
-    {% for message in messages %}
-        {% if message.tags %}  
-            <script>
-                window.onload = function() {
-                    alert("{{ message }}");
-                };
-            </script>
+<script>
+    window.onload = function() {
+        create_diagram();
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags %}  
+                    setTimeout(function() {
+                        alert("{{ message }}");
+                    }, 2500);
+                {% endif %}
+            {% endfor %}
         {% endif %}
-    {% endfor %}
-{% endif %}
+    };
+</script>
 
 {% endblock %}
