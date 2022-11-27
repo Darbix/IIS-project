@@ -169,32 +169,23 @@
                 <div class="accordion-body bg-dark">
                     {% if teams_with_users %}
                     {% for team, users in teams_with_users.items %}
-                    <div class="accordion" id="singleTeamAccordion{{ team.id }}">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="heading{{ team.id }}">
-                                <button class="accordion-button collapsed bg-dark text-white " type="button" data-bs-toggle="collapse"
-                                    data-bs-target="#collapse{{ team.id }}" aria-expanded="false" aria-controls="collapse{{ team.id }}">
-                                {{ team.name }}
-                                </button>
-                            </h2>
-                            <div id="collapse{{ team.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ team.id }}" data-bs-parent="#singleTeamAccordion{{ team.id }}">
-                                <div class="accordion-body bg-dark">
-                                    <table class="table text-white">
-                                        <tr>
-                                            <th>Id</th>
-                                            <th>Name</th>
-                                            <th>Email</th>
-                                        </tr>
-                                        {% for user in users %}
-                                        <tr>
-                                            <td>{{ user.id }}</td>
-                                            <td>{{ user.first_name }} {{ user.last_name }}</td>
-                                            <td>{{ user.email }}</td>
-                                        </tr>
-                                        {% endfor %}
-                                    <table>
-                                </div>
-                            </div>
+                    <div class="card bg-dark">
+                        <div class="card-body bg-dark">
+                            <h5 class="card-title">{{ team.name }}</h5>
+                            <table class="table text-white">
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                                {% for user in users %}
+                                <tr>
+                                    <td>{{ user.id }}</td>
+                                    <td>{{ user.first_name }} {{ user.last_name }}</td>
+                                    <td>{{ user.email }}</td>
+                                </tr>
+                                {% endfor %}
+                            <table>
                         </div>
                     </div>
                     {% endfor %}
