@@ -73,7 +73,6 @@ class Event(TemplateView):
                     # Other contestant team list should not contain user's team
                     teams = teams.filter(~Q(id=team.id)).order_by("confirmed")
                 
-                    # TODO check it
                 for t in teams:
                     members_ids = list(UserTeam.objects.filter(team=t.id).values_list("user", flat=True))
                     members = None
@@ -288,7 +287,7 @@ class RemoveTournament(TemplateView):
             messages.info(request, "The event does not exist")
             return redirect("event", event_id=kwargs["event_id"])
         
-        # event.delete() TODO uncomment
+        event.delete()
 
         messages.info(request, "The tournament was successfully removed")
         return redirect("events")
@@ -307,8 +306,6 @@ class GenerateSchedule(TemplateView):
             matches = TournamentMatch.objects.filter(tournament=kwargs["event_id"])
             for match in matches:
                 match.delete()
-            
-            messages.info(request, "Existing matches were successfully deleted")
         except:
             pass
         
