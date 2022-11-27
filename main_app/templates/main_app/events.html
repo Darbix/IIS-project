@@ -61,13 +61,15 @@
             </form>
         {% endfor %}
         {% endwith %}
-    </div>
+    </div>  
 
-    <form method="GET" action="create/">
-        <button class="btn-add-tournament">
-            <span class="fa-solid fa-plus"></span>
-        </button>
-    </form>
+    {% if request.session.user %}
+        <form method="GET" action="create/">
+            <button class="btn-add-tournament">
+                <span class="fa-solid fa-plus"></span>
+            </button>
+        </form>
+    {% endif %}
 
     {% if messages %}
         {% for message in messages %}
