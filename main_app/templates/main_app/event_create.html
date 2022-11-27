@@ -89,13 +89,28 @@
                 </div>
             </div>
 
-            <div class="row title-box mb-5">
+            <div class="row title-box">
                 <div class="col-lg-4 head-title d-flex align-items-center">
                     <div class="icon-box"><i class="fa-solid fa-people-group"></i></div>
                     <div class="heading">Max team members</div>
                 </div>
                 <div class="col-lg-8 info-content-box">
                     <input type="number" id="max" name="max" min="1" placeholder="0" value="{% if event %}{{ event.maximum_team_size }}{% endif %}">
+                </div>
+            </div>
+
+            <div class="row title-box">
+                <div class="col-lg-4 head-title d-flex align-items-center">
+                    <div class="icon-box"><i class="fa-solid fa-users-gear"></i></div>
+                    <div class="heading">Moderators</div>
+                </div>
+                <div class="col-lg-8 info-content-box">
+                    <select id="moderators" name="moderators" value="" class="moderators-select" multiple>
+                        <option value="none" selected disabled hidden>Select moderators</option>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.email }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
