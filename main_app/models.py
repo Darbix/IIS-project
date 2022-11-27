@@ -9,7 +9,7 @@ class RegisteredUser(models.Model):
     password = models.CharField(max_length=88)
     # Nastavitelné po registraci
     birth_date = models.DateField(default=datetime.datetime(1970, 1, 1))
-    avatar = models.ImageField(upload_to='static/avatars/', default='static/avatars/default.png')
+    avatar = models.ImageField(upload_to='media/avatars/', default='media/avatars/default.png')
     description = models.TextField(blank=True)
     join_date = models.DateField(default=datetime.date.today)
 
@@ -52,7 +52,7 @@ class Team(models.Model):
             (1, 'Confirmed')
         ), default=0
     )
-    avatar = models.ImageField(upload_to='static/avatars/', default='static/avatars/default.png')
+    avatar = models.ImageField(upload_to='media/avatars/', default='media/avatars/default.png')
 
 # Ukládání týmů. Uživatel může být ve více týmech zároveň a týmy mají několik uživatelů
 class UserTeam(models.Model):
