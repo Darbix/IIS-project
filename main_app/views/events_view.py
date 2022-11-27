@@ -43,6 +43,10 @@ class EventCreate(TemplateView):
 
     def get(self, request, *args, **kwargs):
         event = None
+        if(not request.session.get("user")):
+            messages.info(request, "You have to be logged in to create an event!")
+            return redirect(self.events_page)
+
         try:
             # Load an existing event, if it is Edit and not Create
             if("event_id" in kwargs):
