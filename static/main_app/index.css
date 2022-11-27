@@ -1,0 +1,70 @@
+.game-icons{
+    position: relative;
+}
+
+.trophy-box{
+    position: absolute; 
+    top: -155px;
+}
+
+.trophy-icon{
+    filter: drop-shadow(0 0 40px rgb(210, 180, 0)); 
+    font-size: 240px;
+}
+
+.board-icon{
+    font-size: 170px; 
+    color: var(--color2); 
+    transform: scale(4, 1) 
+    skew(-20deg);
+}
+
+.chess-fig{
+    animation: shake 0.5s;
+    animation-iteration-count: infinite;
+    font-size: 165px; 
+    color: var(--color1);
+}
+
+@keyframes shake {
+    0% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+    100% { transform: rotate(-1deg); }
+}
+  
+.win-text {
+    background: linear-gradient(to right, rgb(210, 180, 0) 0, hsl(0, 0%, 100%) 10%, rgb(210, 180, 0) 20%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 2.5s infinite linear;
+    color: rgb(210, 180, 0); 
+    text-align: right;
+}
+  
+@keyframes shine {
+    0% {
+      background-position: 0px;
+    }
+    50% {
+      background-position: 500px;
+    }
+    100% {
+      background-position: 0px;
+    }
+}
+
+.text-lines{
+    text-align: center;
+    font-size: 50px;
+    white-space: nowrap;
+    font-family: var(--font1); 
+}
+
+.left-text{
+    color: var(--color1); 
+    text-align: left;
+}
+
+.center-text{
+    color: var(--color2);
+}

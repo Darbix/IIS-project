@@ -14,13 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 # from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+from django.views.static import serve
 from django.conf.urls import handler404
+from django.conf import settings
 
 urlpatterns = [
     # path('admin/', admin.site.urls), # Do not use the django admin module
     path('admin/', include('admin_app.urls')),
     path('', include('main_app.urls')),
+    # Poměrně nevhodné řešení; pro větší aplikace je potřeba použít nějaký CDN ideálně.
+    re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]
 
 # Handle Page not found 404 error
