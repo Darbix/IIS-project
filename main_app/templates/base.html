@@ -6,8 +6,8 @@
 
 <head>
     <title>Tournament manager</title>
-    <link rel="shortcut icon" type="image/x-icon" href="media/favicon.ico?v=3"/>
-    <link rel="stylesheet" href="{% static 'main_app/base.css' %}" />
+    <link rel="shortcut icon" type="image/x-icon" href="/media/favicon.ico"/>
+    <link rel="stylesheet" href="{% static 'main_app/base.css' %}"/>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
@@ -73,7 +73,7 @@
                         <li><a href="/user-teams/"><span class="fa fa-people-group"></span>Teams</a></li>
                     {% endif %}
                     <li class="log-in-out">
-                        {% comment %} TODO check that a user is logged in {% endcomment %}
+                        {% comment %} Check if a user is or not logged in {% endcomment %}
                         <a href="{% if request.session.user == None %}/login-user/{% else %}/logout-user/{% endif %}">
                             <span class="fa fa-right-to-bracket"></span>
                             {% if request.session.user == None %}

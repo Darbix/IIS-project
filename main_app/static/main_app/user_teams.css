@@ -217,6 +217,7 @@ input.team-name{
     color: var(--color-light);
     background: transparent;
     margin: 0;
+    text-align: center;
 }
 
 .team-readonly{
