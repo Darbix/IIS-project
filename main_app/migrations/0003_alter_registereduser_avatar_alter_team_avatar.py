@@ -14,14 +14,14 @@ class Migration(migrations.Migration):
             model_name="registereduser",
             name="avatar",
             field=models.ImageField(
-                default="media/avatars/default.png", upload_to="media/avatars/"
+                default="/media/avatars/default.png", upload_to="media/avatars/"
             ),
         ),
         migrations.AlterField(
             model_name="team",
             name="avatar",
             field=models.ImageField(
-                default="media/avatars/default.png", upload_to="media/avatars/"
+                default="/media/avatars/default.png", upload_to="media/avatars/"
             ),
         ),
     ]
