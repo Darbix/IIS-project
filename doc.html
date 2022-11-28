@@ -35,16 +35,18 @@
 <h2>U¾ivatelé systému pro testování</h2>
 <p>Uveïte prosím existující zástupce <strong>v¹ech rolí u¾ivatelù</strong>.</p>
 <table>
-<tbody><tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
-<tr><td>test@test.com</td><td>123456</td><td>U¾ivatel s týmem</td></tr>
-<tr><td>test2@test.com</td><td>123456</td><td>U¾ivatel (se zalo¾eným turnajem - zakladatel turnaje)</td></tr>
-<tr><td>test@test.com</td><td>123456</td><td>Výchozí administrátor (na admin stránce)</td></tr>
+<tbody>
+    <tr><th>Login</th><th>Heslo</th><th>Role</th></tr>
+    <tr><td>test@test.com</td><td>123456</td><td>U¾ivatel (se zalo¾eným turnajem - zakladatel turnaje)</td></tr>
+    <tr><td>test2@test.com</td><td>123456</td><td>U¾ivatel, který je vedoucím týmu</td></tr>
+    <tr><td>test3@test.com</td><td>123456</td><td>U¾ivatel, který je èlenem týmu</td></tr>
+    <tr><td>test@test.com</td><td>123456</td><td>Výchozí administrátor (na admin stránce)</td>
+</tr>
 </tbody></table>
 
 <h3>Video</h3>
-
-<p>Pøilo¾te odkaz na komentované video demostrující pou¾ití informaèního systému. Zamìøte se na pøípady u¾ití definované zadáním (napø. registrace u¾ivatele, správa u¾ivatelù a èinnosti jednotlivých rolí). Video nahrajte napøíklad na VUT Google Drive, kde ho bude mo¾né pøímo spustit z odkazu.</p> 
-<a href="/">TODO: Odkaz</a>
+<p>Demonstrace základního vyu¾ití aplikace a prùvodce webovými stránkami k nalezení na odkaze: </p>
+<a href="https://drive.google.com/file/d/1h8G6zpGy3VsGWvsaLV-iL7LFlM1ar8hH/view?usp=sharing">https://drive.google.com/file/d/1h8G6zpGy3VsGWvsaLV-iL7LFlM1ar8hH/view?usp=sharing</a>
 
 <h2>Implementace</h2>
 <p>
@@ -58,7 +60,7 @@
 
 <h3>Hlavní aplikace</h3>
 <p>
-    Z úvodní stránky je mo¾né se pomocí horních zálo¾ek dostat na stránku naplánovaných turnajù, na stránku výsledkù nebo stránku zobrazující statistiku v¹ech u¾ivatelù.
+    Z úvodní stránky je mo¾né se pomocí horních zálo¾ek dostat na stránku naplánovaných turnajù, na stránku jejich výsledkù nebo stránku zobrazující statistiku v¹ech u¾ivatelù.
     Kliknutím na ikonku u¾ivatele v pravém horním rohu je mo¾no se pøihlásit, pøípadnì vytvoøit nový úèet. 
 </p>
 <p>
@@ -72,7 +74,7 @@
     Celkové statistiky v¹ech u¾ivatelù se zobrazí po kliknutí na zálo¾ku <i>Stats</i>. U¾ivatelé jsou seøazeni podle poètu výher, procent pora¾ených oponentù v zápasech a pøípadnì dle dal¹ích dostupných atributù.
 </p>
 <p>
-    Pøihlá¹ený u¾ivatel má po kliknutí na ikonku u¾ivatele také mo¾nost editace vlastního profilu <i>Profile</i> nebo týmù <i>Teams</i>. V sekci týmù vidí jak týmy, do kterých patøí, tak i týmy, které sám vytvoøil pomocí tlaèítka <b>+</b> vpravo dole. Tým slou¾í k pøipojení na jeden turnaj z mnoha dùvodù. Po zmìnì èlenù pro dal¹í turnaj by pak napø. bylo znemo¾nìno vypoèítat statistiky hráèe, který turnaj hrál, ale pozdìji byl nahrazen. V horní èásti je pøepínaè pro zmìnu zobrazení mezi aktuálními týmy a mezi ji¾ needitovatelnými tými v probíhajících a ukonèených turnajích.  
+    Pøihlá¹ený u¾ivatel má po kliknutí na ikonku u¾ivatele také mo¾nost editace vlastního profilu <i>Profile</i> nebo týmù <i>Teams</i>. V sekci týmù vidí jak týmy, do kterých patøí, tak i týmy, které sám vytvoøil pomocí tlaèítka <b>+</b> vpravo dole. Tým slou¾í k pøipojení na jeden turnaj z mnoha dùvodù. Po zmìnì èlenù pro dal¹í turnaj by pak napø. bylo znemo¾nìno vypoèítat statistiky hráèe, který turnaj hrál, ale pozdìji byl nahrazen. V horní èásti je pøepínaè pro zmìnu zobrazení mezi aktuálními týmy a mezi ji¾ needitovatelnými týmy v probíhajících a ukonèených turnajích.  
 </p>
   <p>Zdrojové soubory jsou dostupné v /main_app/:</p>
 <ul>
@@ -131,12 +133,12 @@
 
 <h2>Instalace</h2>
 
-<p>Na serveru je po rozbalení zip archivu webové aplikace potøeba pøejít do hlavního adresáøe. Pro správnou funkènost následující úkonù je podstatné mít na svém serveru nainstalované balíèky jazyka Python vy¾adované touto aplikací. Ty je mo¾né vyèíst ze sekce "Softwarové po¾adavky". V domovském adresáøi se nachází soubor <b>manage.py</b>, který je vstupním bodem aplikace. Jeho spu¹tìní se provádí pøíkazem "<i>python manage.py runserver</i>". Tento soubor naèítá nastavení ze <b>tournaments_project/settings.py</b>. Díky frameworku Django bylo mo¾né vyu¾ít objektovì relaèní mapování databáze, a proto je vhodné pro tento úèel vyu¾ít PostgreSQL. Informace ke správnému pøipojení databáze jsou uvedeny právì v poslednì zmínìném souboru. Po spu¹tìní serveru tyto údaje (hostname, u¾ivatel, heslo a dal¹í parametry úètu) a databáze zpùsobí úspì¹né propojení mezi obìma uzly. K inicializaci datového modelu na hostovacím serveru slou¾í instrukce "<i>python manage.py migrate</i>". Za bìhu aplikace jsou pro zdrojové HTML soubory dodávány statické soubory, které je pøi pøípadné zmìnì mo¾né sesbírat pomocí "<i>python manage.py collectstatic</i>".<br>
-Ke zprovoznìní tohoto projektu webových stránek na adrese z úvodní sekce byla pou¾ita cloudová platforma Azure od Microsoft. Slu¾ba nabízí získávání zdrojových dat pro server pøímo z GitHubu, na kterém byl projekt vyvíjen. Pro nahrávání dat zde byl vytvoøen YAML soubor, který zdrojová data sestavuje a nasazuje na server. Pro ukládání dat byla vyu¾ita databáze od ElephantSQL, pøipojená pøes nutné identifikaèní údaje. 
+<p>Na serveru je po rozbalení zip archivu webové aplikace potøeba pøejít do hlavního adresáøe. Pro správnou funkènost následujících úkonù je podstatné mít na svém serveru nainstalované balíèky jazyka Python vy¾adované touto aplikací. Ty je mo¾né vyèíst ze sekce "Softwarové po¾adavky". V domovském adresáøi se nachází soubor <b>manage.py</b>, který je vstupním bodem aplikace. Jeho spu¹tìní se provádí pøíkazem "<i>python manage.py runserver</i>". Tento soubor naèítá nastavení z <b>tournaments_project/settings.py</b>. Díky frameworku Django bylo mo¾né vyu¾ít objektovì relaèní mapování databáze, a proto je vhodné pro tento úèel vyu¾ít PostgreSQL. Informace ke správnému pøipojení databáze jsou uvedeny právì v poslednì zmínìném souboru. Po spu¹tìní serveru tyto údaje (hostname, u¾ivatel, heslo a dal¹í parametry úètu) naèteny a databáze utvoøí úspì¹né propojení mezi obìma uzly. K inicializaci datového modelu na hostovacím serveru slou¾í instrukce "<i>python manage.py migrate</i>". Za bìhu aplikace jsou pro zdrojové HTML soubory dodávány statické soubory, které je pøi pøípadné zmìnì mo¾né sesbírat pomocí "<i>python manage.py collectstatic</i>".<br><br>
+Ke zprovoznìní tohoto projektu webových stránek na adrese z úvodní sekce byla pou¾ita cloudová platforma Azure od Microsoft. Slu¾ba nabízí získávání zdrojových dat pro server pøímo z GitHubu, na kterém byl projekt vyvíjen. Pro nahrávání dat zde byl vytvoøen YAML soubor, který zdrojová data sestavuje do aplikace a nasazuje ji na server. Pro ukládání dat byla vyu¾ita databáze od ElephantSQL pøipojená pøes nutné identifikaèní údaje. 
 </p>
 
 <h3>Softwarové po¾adavky</h3>
-<p>Zaruèena je funkènost na zaøízeních s nainstalovou podporou jazyka Python ve verzi 3.10+ a následujícími balíèky pro správce modulù PIP:</p>
+<p>Zaruèena je funkènost na zaøízeních s nainstalovanou podporou jazyka Python ve verzi 3.10+ a následujícími balíèky správce modulù PIP:</p>
 <ul>
   <li>Django, verze 4.1.1+</li>
   <li>Pillow, verze 8.3.2+</li>
