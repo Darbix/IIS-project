@@ -25,7 +25,7 @@
             <div class="team-box p-3 mb-2 team-readonly">
                 <div class="d-flex align-items-center h4 team-header mb-1">
                     <div class="profile-img-div me-3">
-                        <img src="{{ team.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
+                        <img src="{{ team.info.avatar.url }}" class="rounded-circle full-width profile-img" alt=" "/>
                     </div>
 
                     <span class="team-name">{{ team.info.name }}</span>
@@ -43,7 +43,7 @@
                     <div class="player-box mt-1 {% if member.id != request.session.user.id %}opacity-low{% endif %}">
                         <div class="d-flex align-items-center">
                             <div class="profile-img-div small-img">
-                                <img src="{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                                <img src="{{ member.avatar.url }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                             </div>
                             
                             <div class="row ms-4 w-100">
@@ -82,7 +82,7 @@
 
                 <div class="d-flex align-items-center h4 team-header mb-1">
                     <div class="profile-img-div me-3">
-                        <img src="{{ team.info.avatar }}" class="rounded-circle full-width profile-img" id="team_image_{{ team.info.id }}" alt=" "/>
+                        <img src="{{ team.info.avatar.url }}" class="rounded-circle full-width profile-img" id="team_image_{{ team.info.id }}" alt=" "/>
                     </div>
 
                     <form method="POST" action="change-name/" class="w-100" onsubmit="confirm('Do you realy want to change the team name?')">
@@ -122,7 +122,7 @@
                     <div class="player-box mt-1">
                         <div class="d-flex align-items-center">
                             <div class="profile-img-div small-img">
-                                <img src="{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                                <img src="{{ member.avatar.url }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                             </div>
                             
                             <div class="row ms-4 w-100">
@@ -219,7 +219,7 @@
             <div class="team-box p-3 mb-2">
                 <div class="d-flex align-items-center h4 team-header mb-1">
                     <div class="profile-img-div me-3">
-                        <img src="{{ team.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
+                        <img src="{{ team.info.avatar.url }}" class="rounded-circle full-width profile-img" alt=" "/>
                     </div>
 
                     <span class="team-name">{{ team.info.name }}</span>
@@ -237,8 +237,7 @@
                     <div class="player-box mt-1 {% if member.id != request.session.user.id %}opacity-low{% endif %}">
                         <div class="d-flex align-items-center">
                             <div class="profile-img-div small-img">
-                                <img src="{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
-                                {% comment %} {{ request.session.user.avatar_url }} {% endcomment %}
+                                <img src="{{ member.avatar.url }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                             </div>
                             
                             <div class="row ms-4 w-100">

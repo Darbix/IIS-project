@@ -49,7 +49,7 @@
                 <div class="team-box p-3 mb-2 team-readonly">
                     <div class="d-flex align-items-center h4 team-header mb-1">
                         <div class="profile-img-div me-3">
-                            <img src="{{ winner_team.info.avatar }}" class="rounded-circle full-width profile-img" alt=" "/>
+                            <img src="{{ winner_team.info.avatar.url }}" class="rounded-circle full-width profile-img" alt=" "/>
                         </div>
 
                         <span class="team-name">{{ winner_team.info.name }}</span>
@@ -59,7 +59,7 @@
                         <div class="player-box mt-1">
                             <div class="d-flex align-items-center">
                                 <div class="profile-img-div small-img">
-                                    <img src="{{ member.avatar }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
+                                    <img src="{{ member.avatar.url }}" class="rounded-circle full-width small-img profile-img" alt=" "/>
                                 </div>
                                 
                                 <div class="row ms-4 w-100">
